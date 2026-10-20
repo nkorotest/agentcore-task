@@ -1,0 +1,18 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyEveryBedrockModelExceptTheAgentModel",
+      "Effect": "Deny",
+      "Action": [
+        "bedrock:InvokeModel",
+        "bedrock:InvokeModelWithResponseStream",
+        "bedrock:CountTokens"
+      ],
+      "NotResource": [
+        "arn:aws:bedrock:*:062788795353:inference-profile/us.anthropic.claude-haiku-5-5",
+        "arn:aws:bedrock:*::foundation-model/anthropic.claude-haiku-5-5*"
+      ]
+    }
+  ]
+}
