@@ -6,6 +6,7 @@ from bedrock_agentcore.runtime import BedrockAgentCoreApp
 from model.load import load_model
 from mcp_client.client import get_support_gateway_mcp_client
 from memory.session import get_memory_session_manager
+from reliability import LoopGuard, ToolRetry
 
 app = BedrockAgentCoreApp()
 log = app.logger
@@ -31,8 +32,7 @@ def agent_factory():
                 conversation_manager=_make_conversation_manager(),
                 system_prompt=SYSTEM_PROMPT,
                 tools=tools,
-                hooks=[
-                ],
+                hooks=[ToolRetry(), LoopGuard()],
             )
         return cache[key]
     return get_or_create_agent

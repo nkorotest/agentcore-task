@@ -5,7 +5,7 @@ from strands.models.bedrock import BedrockModel
 
 DEFAULT_MODEL_ID = "us.anthropic.claude-haiku-5-5"
 
-# Adaptive retry mode: exponential backoff with jitter, plus client-side rate limiting on throttling.
+# Adaptive retry mode: exponential backoff with jitter plus client-side rate limiting on throttling.
 _BEDROCK_CLIENT_CONFIG = Config(
     retries={"mode": "adaptive", "max_attempts": 6},
     connect_timeout=5,

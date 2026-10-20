@@ -1,0 +1,40 @@
+# Idempotent refund through AgentCore Gateway (idempotency_key = operation-123)
+# Run at: 2026-10-20T12:57:17Z by: arn:aws:iam::062788795353:user/admin
+
+## Call 1: uv run scripts/call_gateway_tool.py call RefundsTarget___refund_customer '{"order_id": "123", "amount_cents": 2500, "reason": "Delivery is a week late", "idempotency_key": "operation-123"}'
+{
+  "refund_id": "rf_2e3e9f29a54d44f3abddc2a4b37fd9f3",
+  "order_id": "123",
+  "amount_cents": 2500,
+  "currency": "USD",
+  "status": "COMPLETED",
+  "created_at": "2026-10-20T12:57:50+00:00",
+  "idempotency_key": "operation-123",
+  "replayed": false
+}
+
+## Call 2: uv run scripts/call_gateway_tool.py call RefundsTarget___refund_customer '{"order_id": "123", "amount_cents": 2500, "reason": "Delivery is a week late", "idempotency_key": "operation-123"}'
+{
+  "refund_id": "rf_2e3e9f29a54d44f3abddc2a4b37fd9f3",
+  "order_id": "123",
+  "amount_cents": 2500,
+  "currency": "USD",
+  "status": "COMPLETED",
+  "created_at": "2026-10-20T12:57:50+00:00",
+  "idempotency_key": "operation-123",
+  "replayed": true
+}
+
+## Refunds table rows for operation-123 (DynamoDB GetItem)
+{
+    "refund_id": "rf_2e3e9f29a54d44f3abddc2a4b37fd9f3",
+    "order_id": "123",
+    "amount_cents": "2500",
+    "created_at": "2026-10-20T12:57:50+00:00"
+}
+
+## Refund Lambda log lines for operation-123 (CloudWatch Logs)
+2026-10-20T12:57:49Z INFO Tool invoked 
+2026-10-20T12:57:50Z INFO Refund created rf_2e3e9f29a54d44f3abddc2a4b37fd9f3
+2026-10-20T12:58:17Z INFO Tool invoked 
+2026-10-20T12:58:17Z INFO Refund replayed for a retried operation rf_2e3e9f29a54d44f3abddc2a4b37fd9f3
