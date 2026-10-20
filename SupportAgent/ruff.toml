@@ -5,4 +5,4 @@ target-version = "py312"
 select = ["E", "F", "I", "B", "UP", "SIM"]
 
 [lint.isort]
-known-first-party = ["mcp_client", "memory", "model", "reliability"]
+known-first-party = ["mcp_client", "memory", "model", "reliability", "request_identity"]

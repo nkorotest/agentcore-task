@@ -16,11 +16,10 @@ def get_memory_session_manager(session_id: Optional[str], actor_id: str) -> Opti
     # without a runtime session header, so synthesize one when absent.
     session_id = session_id or uuid.uuid4().hex
 
+    # Long-term memory holds one strategy: user preferences, extracted per actor (end user), so a
+    # preference stated in one session is available in that user's later sessions.
     retrieval_config = {
-        f"/users/{actor_id}/facts": RetrievalConfig(top_k=3, relevance_score=0.5),
-        f"/users/{actor_id}/preferences": RetrievalConfig(top_k=3, relevance_score=0.5),
-        f"/episodes/{actor_id}/{session_id}": RetrievalConfig(top_k=5, relevance_score=0.5),
-        f"/summaries/{actor_id}": RetrievalConfig(top_k=3, relevance_score=0.5),
+        f"/users/{actor_id}/preferences": RetrievalConfig(top_k=5, relevance_score=0.5),
     }
 
     return AgentCoreMemorySessionManager(

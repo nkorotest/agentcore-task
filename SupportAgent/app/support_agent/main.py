@@ -7,6 +7,7 @@ from model.load import load_model
 from mcp_client.client import get_support_gateway_mcp_client
 from memory.session import get_memory_session_manager
 from reliability import LoopGuard, ToolRetry
+from request_identity import resolve_actor_id, resolve_session_id
 
 app = BedrockAgentCoreApp()
 log = app.logger
@@ -22,13 +23,12 @@ def _make_conversation_manager():
 
 def agent_factory():
     cache = {}
-    def get_or_create_agent(session_id, user_id):
-        _actor_id = user_id
-        key = f"{session_id}/{_actor_id}"
+    def get_or_create_agent(session_id, actor_id):
+        key = f"{session_id}/{actor_id}"
         if key not in cache:
             cache[key] = Agent(
                 model=load_model(),
-                session_manager=get_memory_session_manager(session_id, _actor_id),
+                session_manager=get_memory_session_manager(session_id, actor_id),
                 conversation_manager=_make_conversation_manager(),
                 system_prompt=SYSTEM_PROMPT,
                 tools=tools,
@@ -90,15 +90,12 @@ def _extract_prompt(payload: dict):
 
 @app.entrypoint
 async def invoke(payload, context):
-    log.info("Invoking Agent.....")
-
-
-    session_id = getattr(context, 'session_id', 'default-session')
-    user_id = getattr(context, 'user_id', 'default-user')
-    agent = get_or_create_agent(session_id, user_id)
+    session_id = resolve_session_id(context)
+    actor_id = resolve_actor_id(context, session_id)
+    log.info("Invoking agent", extra={"session_id": session_id, "actor_id": actor_id})
+    agent = get_or_create_agent(session_id, actor_id)
 
     prompt = _extract_prompt(payload)
-
 
     async for event in agent.stream_async(
         prompt,
