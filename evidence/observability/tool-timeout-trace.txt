@@ -1,0 +1,81 @@
+# uv run scripts/show_trace.py 557fede5501de058b271ee0fc136da79
+Trace 557fede5501de058b271ee0fc136da79
+2026-10-20 18:25:53.563  AGENT   POST /invocations  status=UNSET  duration=19887ms  span=6908ec2b385c6b86 parent=6cfa4ad6a54eb629
+2026-10-20 18:25:53.758  AGENT   Bedrock AgentCore.ListEvents  status=UNSET  duration=120ms  span=ed840bf13ef4b306 parent=6908ec2b385c6b86
+2026-10-20 18:25:53.879  AGENT   Bedrock AgentCore.ListEvents  status=UNSET  duration=40ms  span=9c7562c42d26a67e parent=6908ec2b385c6b86
+2026-10-20 18:25:53.919  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=92ms  span=9170ffee0cc8be9f parent=6908ec2b385c6b86
+2026-10-20 18:25:54.149  AGENT   mcp tools/list  status=OK  duration=135ms  span=547bf5c1df9d21c0 parent=6908ec2b385c6b86
+2026-10-20 18:25:54.213  SPAN    AgentCore.Gateway.AuthorizeRequest  status=OK  duration=4ms  span=80e06a06573a2dcb parent=6e93945623337fe2
+2026-10-20 18:25:54.213  SPAN    AgentCore.Gateway.InboundAuth  status=OK  duration=13ms  span=6e93945623337fe2 parent=985b0f811534ab86
+2026-10-20 18:25:54.215  SPAN    AgentCore.Gateway.EvaluateRoutingRules  status=OK  duration=0ms  span=2bb13c99b6d49158 parent=985b0f811534ab86
+2026-10-20 18:25:54.216  GATEWAY       {"log": "Started processing request", "requestBody": "{id=1, method=tools/list, params={_meta={baggage=Self=1-6ad7b22b-4f83d02b2b24d8cb0b47eca4,session.id=session-ba5b96294af9b50ee2f4cb99a7ca53e1, X-Amzn-Trace-Id=Root=1-557fede5-501de058b271ee0fc136da79;Parent=547bf5c1df9d21c0;Sampled=1, traceparent=00-557fede5501de058b271ee0fc136da79-547bf5c1df9d21c0-01}}, jsonrpc=2.0}"}
+2026-10-20 18:25:54.217  GATEWAY       {"log": "Received request for tools/list method"}
+2026-10-20 18:25:54.277  SPAN    AgentCore.Policy.PartiallyAuthorizeActions  status=OK  duration=42ms  span=3e3b25146c28c7cd parent=985b0f811534ab86
+2026-10-20 18:25:54.280  GATEWAY       {"responseBody": "{jsonrpc=2.0, id=1, result={tools=[{inputSchema={type=object, properties={customer_id={description=Customer ID in the form C-NNNN, for example \"C-1001\"., type=string}}, required=[customer_id]}, name=CustomersTarget___get_customer, description=Look up a customer by customer ID. Returns the customer's name, email, loyalty tier, member-since date and order IDs. Customer IDs look like \"C-1001\". To find out who placed an order, call get_order_status first and use the customer_id it returns.}, {inputSchema={type=object, properties={order_id={description=Numeric order ID, for example \"123\". Digits only, without '#' or other prefixes., type=string}}, required=[order_id]}, name=OrdersTarget___get_order_status, description=Look up an order by its order ID. Returns the order status, items, total, carrier, tracking number, estimated delivery date, the delay reason for delayed orders, and the customer_id of the customer who placed the order. Use it for any question about where an order is, why it is late, or what it contains.}, {inputSchema={type=object, properties={reason={description=Short reason for the refund, in the customer's words., type=string}, amount_cents={description=Refund amount in cents, for example 2550 for $25.50., type=integer}, idempotency_key={description=Unique ID for this refund operation, for example \"operation-123\". Reuse the same key when retrying the same refund so it is not issued twice., type=string}, order_id={description=Numeric ID of the order to refund, for example \"123\"., type=string}}, required=[amount_cents, idempotency_key, order_id, reason]}, name=RefundsTarget___refund_customer, description=Refund money for an order to the customer who placed it, on the original payment method. Returns the refund ID and status. If the refund is rejected, explain the reason to the customer.}]}}", "log": "Successfully processed request"}
+2026-10-20 18:25:54.281  SPAN    AgentCore.Gateway.ListTools  status=OK  duration=81ms  span=985b0f811534ab86 parent=547bf5c1df9d21c0
+2026-10-20 18:25:54.289  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=88ms  span=5f8f81492ec4dfa4 parent=6908ec2b385c6b86
+2026-10-20 18:25:54.377  AGENT   invoke_agent Strands Agents  status=OK  duration=19073ms  span=68a6fb9098767121 parent=6908ec2b385c6b86
+2026-10-20 18:25:54.378  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=81ms  span=3c2188c0db05678d parent=68a6fb9098767121
+2026-10-20 18:25:54.459  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=195ms  span=d4596abc25bfbb5c parent=68a6fb9098767121
+2026-10-20 18:25:54.655  AGENT   Bedrock AgentCore.RetrieveMemoryRecords  status=UNSET  duration=324ms  span=c2c44aef00dfea7a parent=68a6fb9098767121
+2026-10-20 18:25:54.980  AGENT   execute_event_loop_cycle  status=OK  duration=17497ms  span=134a8ba075adb5ce parent=68a6fb9098767121
+2026-10-20 18:25:54.981  AGENT   chat  status=OK  duration=596ms  span=8bb8fb00df1c6d4d parent=134a8ba075adb5ce
+2026-10-20 18:25:54.996  AGENT   chat us.amazon.nova-2-lite-v1:0  status=UNSET  duration=580ms  span=a50c2bf332267477 parent=8bb8fb00df1c6d4d
+2026-10-20 18:25:55.577  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=89ms  span=961aa50b90e6fa5e parent=134a8ba075adb5ce
+2026-10-20 18:25:55.667  AGENT   execute_tool OrdersTarget___get_order_status  status=ERROR  duration=16617ms  span=30bc1a7e6ff67045 parent=134a8ba075adb5ce
+2026-10-20 18:25:55.668  AGENT   mcp tools/call OrdersTarget___get_order_status  status=ERROR  duration=5183ms  span=6cd9c7d35be49bd5 parent=30bc1a7e6ff67045
+2026-10-20 18:25:55.709  SPAN    AgentCore.Gateway.AuthorizeRequest  status=OK  duration=3ms  span=da6078c4f3c52479 parent=a29c8e6f54f52bee
+2026-10-20 18:25:55.709  SPAN    AgentCore.Gateway.InboundAuth  status=OK  duration=31ms  span=a29c8e6f54f52bee parent=0e017822322cb2f2
+2026-10-20 18:25:55.712  GATEWAY       {"log": "Started processing request", "requestBody": "{id=2, method=tools/call, params={name=OrdersTarget___get_order_status, _meta={baggage=Self=1-6ad7b22b-4f83d02b2b24d8cb0b47eca4,session.id=session-ba5b96294af9b50ee2f4cb99a7ca53e1, X-Amzn-Trace-Id=Root=1-557fede5-501de058b271ee0fc136da79;Parent=6cd9c7d35be49bd5;Sampled=1, traceparent=00-557fede5501de058b271ee0fc136da79-6cd9c7d35be49bd5-01}, arguments={order_id=9001}}, jsonrpc=2.0}"}
+2026-10-20 18:25:55.712  SPAN    AgentCore.Gateway.EvaluateRoutingRules  status=OK  duration=1ms  span=0e5239337102aa6f parent=0e017822322cb2f2
+2026-10-20 18:25:55.716  GATEWAY       {"log": "Received request for tools/call method"}
+2026-10-20 18:25:55.806  SPAN    AgentCore.Policy.AuthorizeAction  status=OK  duration=42ms  span=53288a3331a0435a parent=0e017822322cb2f2
+2026-10-20 18:25:55.807  GATEWAY       {"log": "Executing tool OrdersTarget___get_order_status from target UBTOEQ9AET"}
+2026-10-20 18:25:55.835  SPAN    support-get-order-status/LambdaService  status=UNSET  duration=0ms  span=216c3d40cbf367e8 parent=0e017822322cb2f2
+2026-10-20 18:25:55.840  SPAN    support-get-order-status/LambdaExecutionEnvironment  status=UNSET  duration=0ms  span=0a09200a64d92f1f parent=216c3d40cbf367e8
+2026-10-20 18:26:00.842  SPAN    support-get-order-status/LambdaService  status=ERROR  duration=5008ms  span=216c3d40cbf367e8 parent=0e017822322cb2f2
+2026-10-20 18:26:00.845  GATEWAY ERROR {"log": "An error occurred while executing tool: OrdersTarget___get_order_status from target UBTOEQ9AET"}
+2026-10-20 18:26:00.845  SPAN    AgentCore.Gateway.InvokeTool.OrdersTarget___get_order_status  status=ERROR  duration=5038ms  span=5fd4e73144493206 parent=0e017822322cb2f2
+2026-10-20 18:26:00.846  GATEWAY       {"log": "Policy evaluation completed", "policy": {"decision": "ALLOW", "policyEngineArn": "arn:aws:bedrock-agentcore:us-east-1:536035781966:policy-engine/SupportAgent_SupportPolicyEngine-mnqt99vfh_", "determiningPolicies": ["AllowOrderLookup-nygx8yyxgh"], "principal": {"entityType": "AgentCore::IamEntity", "entityId": "arn:aws:sts::536035781966:assumed-role/AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn"}, "latencyMs": 42, "temporal_evaluation_invoked": false}}
+2026-10-20 18:26:00.846  GATEWAY ERROR {"log": "{\"errorType\":\"Sandbox.Timedout\",\"errorMessage\":\"RequestId: 20cf0e71-cb3f-4d6f-aaad-f12b7d8fabe3 Error: Task timed out after 5.00 seconds\"}"}
+2026-10-20 18:26:00.847  SPAN    AgentCore.Gateway.InvokeTool  status=ERROR  duration=5169ms  span=0e017822322cb2f2 parent=6cd9c7d35be49bd5
+2026-10-20 18:26:00.852  SPAN    support-get-order-status/LambdaExecutionEnvironment  status=ERROR  duration=5000ms  span=0a09200a64d92f1f parent=216c3d40cbf367e8
+2026-10-20 18:26:01.188  AGENT   mcp tools/call OrdersTarget___get_order_status  status=ERROR  duration=5257ms  span=7301a1ddf1b4f640 parent=30bc1a7e6ff67045
+2026-10-20 18:26:01.212  SPAN    AgentCore.Gateway.AuthorizeRequest  status=OK  duration=3ms  span=51550b771ade4b02 parent=19ad6fdb208aaa3e
+2026-10-20 18:26:01.212  SPAN    AgentCore.Gateway.InboundAuth  status=OK  duration=14ms  span=19ad6fdb208aaa3e parent=829ebc3c9f3e5212
+2026-10-20 18:26:01.215  SPAN    AgentCore.Gateway.EvaluateRoutingRules  status=OK  duration=0ms  span=94ae79e9e6a8fb32 parent=829ebc3c9f3e5212
+2026-10-20 18:26:01.339  SPAN    AgentCore.Policy.AuthorizeAction  status=OK  duration=70ms  span=eba31b50513939c4 parent=829ebc3c9f3e5212
+2026-10-20 18:26:01.372  SPAN    support-get-order-status/LambdaService  status=UNSET  duration=0ms  span=7defa20e3af8d820 parent=829ebc3c9f3e5212
+2026-10-20 18:26:01.434  SPAN    Init/LambdaExecutionEnvironment  status=UNSET  duration=54ms  span=1eb4334ba299a1d7 parent=20114e1f6b4d8ba8
+2026-10-20 18:26:01.434  SPAN    support-get-order-status/LambdaExecutionEnvironment  status=UNSET  duration=0ms  span=20114e1f6b4d8ba8 parent=7defa20e3af8d820
+2026-10-20 18:26:06.436  SPAN    support-get-order-status/LambdaService  status=ERROR  duration=5065ms  span=7defa20e3af8d820 parent=829ebc3c9f3e5212
+2026-10-20 18:26:06.439  GATEWAY ERROR {"log": "An error occurred while executing tool: OrdersTarget___get_order_status from target UBTOEQ9AET"}
+2026-10-20 18:26:06.439  SPAN    AgentCore.Gateway.InvokeTool.OrdersTarget___get_order_status  status=ERROR  duration=5099ms  span=3160c77e4335bd9e parent=829ebc3c9f3e5212
+2026-10-20 18:26:06.440  GATEWAY       {"log": "Policy evaluation completed", "policy": {"decision": "ALLOW", "policyEngineArn": "arn:aws:bedrock-agentcore:us-east-1:536035781966:policy-engine/SupportAgent_SupportPolicyEngine-mnqt99vfh_", "determiningPolicies": ["AllowOrderLookup-nygx8yyxgh"], "principal": {"entityType": "AgentCore::IamEntity", "entityId": "arn:aws:sts::536035781966:assumed-role/AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn"}, "latencyMs": 70, "temporal_evaluation_invoked": false}}
+2026-10-20 18:26:06.440  GATEWAY ERROR {"log": "{\"errorType\":\"Sandbox.Timedout\",\"errorMessage\":\"RequestId: 931ec92f-5ac6-4839-9eb6-34269165cc5e Error: Task timed out after 5.00 seconds\"}"}
+2026-10-20 18:26:06.441  SPAN    AgentCore.Gateway.InvokeTool  status=ERROR  duration=5243ms  span=829ebc3c9f3e5212 parent=7301a1ddf1b4f640
+2026-10-20 18:26:06.447  SPAN    support-get-order-status/LambdaExecutionEnvironment  status=ERROR  duration=5000ms  span=20114e1f6b4d8ba8 parent=7defa20e3af8d820
+2026-10-20 18:26:07.043  AGENT   mcp tools/call OrdersTarget___get_order_status  status=ERROR  duration=5240ms  span=020032bc49110de5 parent=30bc1a7e6ff67045
+2026-10-20 18:26:07.064  SPAN    AgentCore.Gateway.AuthorizeRequest  status=OK  duration=3ms  span=72ffe363c1390a79 parent=ee9be1e9b70d2c8e
+2026-10-20 18:26:07.064  SPAN    AgentCore.Gateway.InboundAuth  status=OK  duration=12ms  span=ee9be1e9b70d2c8e parent=7b05e1eb16e86e72
+2026-10-20 18:26:07.067  GATEWAY       {"log": "Started processing request", "requestBody": "{id=4, method=tools/call, params={name=OrdersTarget___get_order_status, _meta={baggage=Self=1-6ad7b22b-4f83d02b2b24d8cb0b47eca4,session.id=session-ba5b96294af9b50ee2f4cb99a7ca53e1, X-Amzn-Trace-Id=Root=1-557fede5-501de058b271ee0fc136da79;Parent=020032bc49110de5;Sampled=1, traceparent=00-557fede5501de058b271ee0fc136da79-020032bc49110de5-01}, arguments={order_id=9001}}, jsonrpc=2.0}"}
+2026-10-20 18:26:07.067  SPAN    AgentCore.Gateway.EvaluateRoutingRules  status=OK  duration=1ms  span=acdbea9f77d8f2f8 parent=7b05e1eb16e86e72
+2026-10-20 18:26:07.068  GATEWAY       {"log": "Received request for tools/call method"}
+2026-10-20 18:26:07.176  SPAN    AgentCore.Policy.AuthorizeAction  status=OK  duration=64ms  span=d66e3cb633da2578 parent=7b05e1eb16e86e72
+2026-10-20 18:26:07.177  GATEWAY       {"log": "Executing tool OrdersTarget___get_order_status from target UBTOEQ9AET"}
+2026-10-20 18:26:07.207  SPAN    support-get-order-status/LambdaService  status=UNSET  duration=0ms  span=3f40b95a31620c8d parent=7b05e1eb16e86e72
+2026-10-20 18:26:07.273  SPAN    Init/LambdaExecutionEnvironment  status=UNSET  duration=57ms  span=2696743afbb2d026 parent=dfe23a07dfba7aef
+2026-10-20 18:26:07.273  SPAN    support-get-order-status/LambdaExecutionEnvironment  status=UNSET  duration=0ms  span=dfe23a07dfba7aef parent=3f40b95a31620c8d
+2026-10-20 18:26:12.276  SPAN    support-get-order-status/LambdaService  status=ERROR  duration=5069ms  span=3f40b95a31620c8d parent=7b05e1eb16e86e72
+2026-10-20 18:26:12.277  GATEWAY ERROR {"log": "An error occurred while executing tool: OrdersTarget___get_order_status from target UBTOEQ9AET"}
+2026-10-20 18:26:12.277  SPAN    AgentCore.Gateway.InvokeTool.OrdersTarget___get_order_status  status=ERROR  duration=5100ms  span=d7fa46bb02250540 parent=7b05e1eb16e86e72
+2026-10-20 18:26:12.278  GATEWAY       {"log": "Policy evaluation completed", "policy": {"decision": "ALLOW", "policyEngineArn": "arn:aws:bedrock-agentcore:us-east-1:536035781966:policy-engine/SupportAgent_SupportPolicyEngine-mnqt99vfh_", "determiningPolicies": ["AllowOrderLookup-nygx8yyxgh"], "principal": {"entityType": "AgentCore::IamEntity", "entityId": "arn:aws:sts::536035781966:assumed-role/AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn"}, "latencyMs": 64, "temporal_evaluation_invoked": false}}
+2026-10-20 18:26:12.278  GATEWAY ERROR {"log": "{\"errorType\":\"Sandbox.Timedout\",\"errorMessage\":\"RequestId: 88662ea0-c48a-4a98-ad5c-0e68028be5b8 Error: Task timed out after 5.00 seconds\"}"}
+2026-10-20 18:26:12.279  SPAN    AgentCore.Gateway.InvokeTool  status=ERROR  duration=5227ms  span=7b05e1eb16e86e72 parent=020032bc49110de5
+2026-10-20 18:26:12.285  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=98ms  span=1a2b93d31bce63cd parent=134a8ba075adb5ce
+2026-10-20 18:26:12.292  SPAN    support-get-order-status/LambdaExecutionEnvironment  status=ERROR  duration=5000ms  span=dfe23a07dfba7aef parent=3f40b95a31620c8d
+2026-10-20 18:26:12.383  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=93ms  span=0d3a5663ea753e8f parent=134a8ba075adb5ce
+2026-10-20 18:26:12.478  AGENT   chat  status=OK  duration=867ms  span=d206c3dc0a1763dc parent=139b1a4d3ea05e47
+2026-10-20 18:26:12.478  AGENT   execute_event_loop_cycle  status=OK  duration=972ms  span=139b1a4d3ea05e47 parent=68a6fb9098767121
+2026-10-20 18:26:12.479  AGENT   chat us.amazon.nova-2-lite-v1:0  status=UNSET  duration=866ms  span=86dda5f729822831 parent=d206c3dc0a1763dc
+2026-10-20 18:26:13.346  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=103ms  span=c5ebd2be06b7cc86 parent=139b1a4d3ea05e47

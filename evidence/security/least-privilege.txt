@@ -1,23 +1,30 @@
-# Least-privilege check (IAM policy simulator) - 2026-10-20T13:20:44Z
+# Least-privilege check (IAM policy simulator) - 2026-10-20T18:18:16Z
 # uv run scripts/check_least_privilege.py
 
-PASS  AgentCore-SupportAgent-de-McpGatewaySupportGatewayR-t5F6Fhg5Gwaz lambda:InvokeFunction   support-get-order-status                                allowed
-PASS  AgentCore-SupportAgent-de-McpGatewaySupportGatewayR-t5F6Fhg5Gwaz lambda:InvokeFunction   support-get-customer                                    allowed
-PASS  AgentCore-SupportAgent-de-McpGatewaySupportGatewayR-t5F6Fhg5Gwaz lambda:InvokeFunction   support-refund-customer                                 allowed
-PASS  AgentCore-SupportAgent-de-McpGatewaySupportGatewayR-t5F6Fhg5Gwaz lambda:InvokeFunction   some-other-function                                     implicitDeny
-PASS  AgentCore-SupportAgent-de-McpGatewaySupportGatewayR-t5F6Fhg5Gwaz dynamodb:PutItem        table/SupportAgentBackend-RefundsTable1C9DB411-UI0UEV759X79 implicitDeny
-PASS  SupportAgentBackend-GetOrderStatusServiceRole33E87E-zZcqeu9ft5Nl dynamodb:GetItem        table/SupportAgentBackend-RefundsTable1C9DB411-UI0UEV759X79 implicitDeny
-PASS  SupportAgentBackend-GetOrderStatusServiceRole33E87E-zZcqeu9ft5Nl dynamodb:PutItem        table/SupportAgentBackend-RefundsTable1C9DB411-UI0UEV759X79 implicitDeny
-PASS  SupportAgentBackend-GetOrderStatusServiceRole33E87E-zZcqeu9ft5Nl lambda:InvokeFunction   support-refund-customer                                 implicitDeny
-PASS  SupportAgentBackend-GetCustomerServiceRoleFD032082-NEmfv16Q8jxf dynamodb:GetItem        table/SupportAgentBackend-RefundsTable1C9DB411-UI0UEV759X79 implicitDeny
-PASS  SupportAgentBackend-GetCustomerServiceRoleFD032082-NEmfv16Q8jxf dynamodb:PutItem        table/SupportAgentBackend-RefundsTable1C9DB411-UI0UEV759X79 implicitDeny
-PASS  SupportAgentBackend-GetCustomerServiceRoleFD032082-NEmfv16Q8jxf lambda:InvokeFunction   support-refund-customer                                 implicitDeny
-PASS  SupportAgentBackend-RefundCustomerServiceRoleD8AA78-OWE2KflvrNUp dynamodb:PutItem        table/SupportAgentBackend-RefundsTable1C9DB411-UI0UEV759X79 allowed
-PASS  SupportAgentBackend-RefundCustomerServiceRoleD8AA78-OWE2KflvrNUp dynamodb:GetItem        table/SupportAgentBackend-RefundsTable1C9DB411-UI0UEV759X79 allowed
-PASS  SupportAgentBackend-RefundCustomerServiceRoleD8AA78-OWE2KflvrNUp dynamodb:UpdateItem     table/SupportAgentBackend-RefundsTable1C9DB411-UI0UEV759X79 implicitDeny
-PASS  SupportAgentBackend-RefundCustomerServiceRoleD8AA78-OWE2KflvrNUp dynamodb:DeleteItem     table/SupportAgentBackend-RefundsTable1C9DB411-UI0UEV759X79 implicitDeny
-PASS  SupportAgentBackend-RefundCustomerServiceRoleD8AA78-OWE2KflvrNUp dynamodb:Scan           table/SupportAgentBackend-RefundsTable1C9DB411-UI0UEV759X79 implicitDeny
-PASS  SupportAgentBackend-RefundCustomerServiceRoleD8AA78-OWE2KflvrNUp dynamodb:PutItem        table/some-other-table                                  implicitDeny
-PASS  SupportAgentBackend-RefundCustomerServiceRoleD8AA78-OWE2KflvrNUp lambda:InvokeFunction   support-refund-customer                                 implicitDeny
+PASS  AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn bedrock:InvokeModel     inference-profile/us.amazon.nova-2-lite-v1:0            allowed
+PASS  AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn bedrock:InvokeModel     foundation-model/amazon.nova-2-lite-v1:0                allowed
+PASS  AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn bedrock:InvokeModel     inference-profile/us.anthropic.claude-haiku-5-5         explicitDeny
+PASS  AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn bedrock-agentcore:InvokeGateway gateway/supportagent-supportgateway-v0etrfiz7f          allowed
+PASS  AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn bedrock-agentcore:InvokeGateway gateway/some-other-gateway                              implicitDeny
+PASS  AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn lambda:InvokeFunction   function:support-refund-customer                        implicitDeny
+PASS  AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn dynamodb:PutItem        table/SupportAgentBackend-RefundsTable1C9DB411-12SYEFVTMIG4C implicitDeny
+PASS  AgentCore-SupportAgent-de-McpGatewaySupportGatewayR-oIsJmrT8crtI lambda:InvokeFunction   function:support-get-order-status                       allowed
+PASS  AgentCore-SupportAgent-de-McpGatewaySupportGatewayR-oIsJmrT8crtI lambda:InvokeFunction   function:support-get-customer                           allowed
+PASS  AgentCore-SupportAgent-de-McpGatewaySupportGatewayR-oIsJmrT8crtI lambda:InvokeFunction   function:support-refund-customer                        allowed
+PASS  AgentCore-SupportAgent-de-McpGatewaySupportGatewayR-oIsJmrT8crtI lambda:InvokeFunction   function:some-other-function                            implicitDeny
+PASS  AgentCore-SupportAgent-de-McpGatewaySupportGatewayR-oIsJmrT8crtI dynamodb:PutItem        table/SupportAgentBackend-RefundsTable1C9DB411-12SYEFVTMIG4C implicitDeny
+PASS  SupportAgentBackend-GetOrderStatusServiceRole33E87E-AhQVGSXBOjQT dynamodb:GetItem        table/SupportAgentBackend-RefundsTable1C9DB411-12SYEFVTMIG4C implicitDeny
+PASS  SupportAgentBackend-GetOrderStatusServiceRole33E87E-AhQVGSXBOjQT dynamodb:PutItem        table/SupportAgentBackend-RefundsTable1C9DB411-12SYEFVTMIG4C implicitDeny
+PASS  SupportAgentBackend-GetOrderStatusServiceRole33E87E-AhQVGSXBOjQT lambda:InvokeFunction   function:support-refund-customer                        implicitDeny
+PASS  SupportAgentBackend-GetCustomerServiceRoleFD032082-XB6rqyjx5zGD dynamodb:GetItem        table/SupportAgentBackend-RefundsTable1C9DB411-12SYEFVTMIG4C implicitDeny
+PASS  SupportAgentBackend-GetCustomerServiceRoleFD032082-XB6rqyjx5zGD dynamodb:PutItem        table/SupportAgentBackend-RefundsTable1C9DB411-12SYEFVTMIG4C implicitDeny
+PASS  SupportAgentBackend-GetCustomerServiceRoleFD032082-XB6rqyjx5zGD lambda:InvokeFunction   function:support-refund-customer                        implicitDeny
+PASS  SupportAgentBackend-RefundCustomerServiceRoleD8AA78-PFj8LgPaoNm9 dynamodb:PutItem        table/SupportAgentBackend-RefundsTable1C9DB411-12SYEFVTMIG4C allowed
+PASS  SupportAgentBackend-RefundCustomerServiceRoleD8AA78-PFj8LgPaoNm9 dynamodb:GetItem        table/SupportAgentBackend-RefundsTable1C9DB411-12SYEFVTMIG4C allowed
+PASS  SupportAgentBackend-RefundCustomerServiceRoleD8AA78-PFj8LgPaoNm9 dynamodb:UpdateItem     table/SupportAgentBackend-RefundsTable1C9DB411-12SYEFVTMIG4C implicitDeny
+PASS  SupportAgentBackend-RefundCustomerServiceRoleD8AA78-PFj8LgPaoNm9 dynamodb:DeleteItem     table/SupportAgentBackend-RefundsTable1C9DB411-12SYEFVTMIG4C implicitDeny
+PASS  SupportAgentBackend-RefundCustomerServiceRoleD8AA78-PFj8LgPaoNm9 dynamodb:Scan           table/SupportAgentBackend-RefundsTable1C9DB411-12SYEFVTMIG4C implicitDeny
+PASS  SupportAgentBackend-RefundCustomerServiceRoleD8AA78-PFj8LgPaoNm9 dynamodb:PutItem        table/some-other-table                                  implicitDeny
+PASS  SupportAgentBackend-RefundCustomerServiceRoleD8AA78-PFj8LgPaoNm9 lambda:InvokeFunction   function:support-refund-customer                        implicitDeny
 
 0 unexpected decision(s)

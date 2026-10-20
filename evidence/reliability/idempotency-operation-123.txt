@@ -1,40 +1,43 @@
-# Idempotent refund through AgentCore Gateway (idempotency_key = operation-123)
-# Run at: 2026-10-20T12:57:17Z by: arn:aws:iam::062788795353:user/admin
+# Idempotent refund through AgentCore Gateway (idempotency_key = operation-123), account 536035781966
+# Source: scripts/run_scenarios.py run scenario-20261020T181444 (first use of operation-123 in this account)
 
-## Call 1: uv run scripts/call_gateway_tool.py call RefundsTarget___refund_customer '{"order_id": "123", "amount_cents": 2500, "reason": "Delivery is a week late", "idempotency_key": "operation-123"}'
+## Call 1: RefundsTarget___refund_customer {"order_id": "123", "amount_cents": 2500, "reason": "Delivery is a week late", "idempotency_key": "operation-123"}
 {
-  "refund_id": "rf_2e3e9f29a54d44f3abddc2a4b37fd9f3",
+  "refund_id": "rf_e390b8c4b3ad4b0fb272a67c51a1598c",
   "order_id": "123",
   "amount_cents": 2500,
   "currency": "USD",
   "status": "COMPLETED",
-  "created_at": "2026-10-20T12:57:50+00:00",
+  "created_at": "2026-10-20T18:15:44+00:00",
   "idempotency_key": "operation-123",
   "replayed": false
-}
+} 
 
-## Call 2: uv run scripts/call_gateway_tool.py call RefundsTarget___refund_customer '{"order_id": "123", "amount_cents": 2500, "reason": "Delivery is a week late", "idempotency_key": "operation-123"}'
+## Call 2: RefundsTarget___refund_customer {"order_id": "123", "amount_cents": 2500, "reason": "Delivery is a week late", "idempotency_key": "operation-123"}
 {
-  "refund_id": "rf_2e3e9f29a54d44f3abddc2a4b37fd9f3",
+  "refund_id": "rf_e390b8c4b3ad4b0fb272a67c51a1598c",
   "order_id": "123",
   "amount_cents": 2500,
   "currency": "USD",
   "status": "COMPLETED",
-  "created_at": "2026-10-20T12:57:50+00:00",
+  "created_at": "2026-10-20T18:15:44+00:00",
   "idempotency_key": "operation-123",
   "replayed": true
-}
+} 
 
-## Refunds table rows for operation-123 (DynamoDB GetItem)
+## Refunds table row for operation-123 (DynamoDB GetItem; the key is the table's partition key)
 {
-    "refund_id": "rf_2e3e9f29a54d44f3abddc2a4b37fd9f3",
-    "order_id": "123",
-    "amount_cents": "2500",
-    "created_at": "2026-10-20T12:57:50+00:00"
-}
+  "amount_cents": "2500",
+  "currency": "USD",
+  "created_at": "2026-10-20T18:15:44+00:00",
+  "status": "COMPLETED",
+  "refund_id": "rf_e390b8c4b3ad4b0fb272a67c51a1598c",
+  "customer_id": "C-1001",
+  "idempotency_key": "operation-123",
+  "order_id": "123",
+  "reason": "Delivery is a week late"
+} 
 
-## Refund Lambda log lines for operation-123 (CloudWatch Logs)
-2026-10-20T12:57:49Z INFO Tool invoked 
-2026-10-20T12:57:50Z INFO Refund created rf_2e3e9f29a54d44f3abddc2a4b37fd9f3
-2026-10-20T12:58:17Z INFO Tool invoked 
-2026-10-20T12:58:17Z INFO Refund replayed for a retried operation rf_2e3e9f29a54d44f3abddc2a4b37fd9f3
+## Refund Lambda log lines for operation-123 (CloudWatch Logs Insights)
+2026-10-20 18:15:44.896 Refund created rf_e390b8c4b3ad4b0fb272a67c51a1598c
+2026-10-20 18:15:49.956 Refund replayed for a retried operation rf_e390b8c4b3ad4b0fb272a67c51a1598c

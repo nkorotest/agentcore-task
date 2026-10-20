@@ -5,21 +5,12 @@ Bedrock AgentCore. It answers order questions, looks up customers and issues ref
 tools exposed by AgentCore Gateway over MCP. A Cedar policy on the gateway, not the prompt, decides
 which refunds are allowed.
 
-## Current status
+## Deployment
 
-| Part | Status |
-|---|---|
-| Business tools (Lambda + DynamoDB) | Deployed and verified |
-| AgentCore Gateway (MCP, IAM auth) | Deployed and verified |
-| AgentCore Policy (Cedar, ENFORCE) | Deployed and verified |
-| Observability (traces, gateway and Lambda logs, saved queries) | Deployed and verified for the gateway-level failures |
-| Agent code (Strands, retries, loop guard, memory wiring) | Written and unit-tested |
-| AgentCore Runtime and Memory | **Not deployed yet** |
-
-The AWS account used for this project currently has its AgentCore Runtime and Memory quotas set to 0
-and Bedrock model invocation blocked, pending AWS Support. Everything that does not need those
-services is deployed and tested. See [Deploying the runtime and memory](#deploying-the-runtime-and-memory)
-for the remaining steps.
+Everything runs in AWS account `536035781966`, region `us-east-1`: the agent on AgentCore Runtime,
+AgentCore Memory, the gateway with its three Lambda tools, the Cedar policy engine, and
+CloudWatch observability. The model is Amazon Nova 2 Lite (`us.amazon.nova-2-lite-v1:0`) on Amazon
+Bedrock.
 
 ## Architecture
 
@@ -34,7 +25,7 @@ flowchart LR
         policy{{"Policy Engine<br/>Cedar, ENFORCE"}}
     end
 
-    runtime -->|Converse| model["Amazon Bedrock<br/>Claude Haiku"]
+    runtime -->|Converse| model["Amazon Bedrock<br/>Nova 2 Lite"]
     runtime <-->|events, preferences| memory
     runtime -->|"tools/call (SigV4, runtime role)"| gateway
     gateway -->|authorize every call| policy
@@ -58,14 +49,14 @@ conditional put keyed on the idempotency key, so a retried call returns the exis
 
 | Requirement | Where | Evidence |
 |---|---|---|
-| Runtime + Strands | [`SupportAgent/app/support_agent`](SupportAgent/app/support_agent) | Pending runtime quota |
-| Gateway with MCP tools (3 business tools) | [`agentcore.json`](SupportAgent/agentcore/agentcore.json), [`backend/`](backend) | [scenarios](evidence/scenarios) |
-| Memory across two sessions | [`memory/session.py`](SupportAgent/app/support_agent/memory/session.py) | Pending memory quota |
+| Runtime + Strands, picks the right tool | [`SupportAgent/app/support_agent`](SupportAgent/app/support_agent) | [agent scenarios](evidence/scenarios) |
+| Gateway with MCP tools (3 business tools) | [`agentcore.json`](SupportAgent/agentcore/agentcore.json), [`backend/`](backend) | [agent and gateway scenarios](evidence/scenarios) |
+| Memory across two sessions | [`memory/session.py`](SupportAgent/app/support_agent/memory/session.py), [`request_identity.py`](SupportAgent/app/support_agent/request_identity.py) | [agent scenarios](evidence/scenarios) |
 | Identity / IAM, no long-lived credentials | [docs/security.md](docs/security.md) | [least-privilege check](evidence/security/least-privilege.txt) |
-| Refund ≤ $1,000 allowed, > $1,000 denied | [`policies/`](SupportAgent/policies) | [scenarios](evidence/scenarios), [deny trace](evidence/observability/policy-deny-trace.txt) |
-| Prompt injection cannot bypass authorization | [docs/security.md](docs/security.md) | [scenarios](evidence/scenarios), [deny trace](evidence/observability/policy-deny-trace.txt); agent run pending model |
+| Refund ≤ $1,000 allowed, > $1,000 denied | [`policies/`](SupportAgent/policies) | [scenarios](evidence/scenarios), [traces](evidence/observability) |
+| Prompt injection cannot bypass authorization | [docs/security.md](docs/security.md) | [agent scenarios](evidence/scenarios), [trace](evidence/observability) |
 | Retry does not create a duplicate refund | [`refunds.py`](backend/src/support_backend/refunds.py) | [operation-123](evidence/reliability/idempotency-operation-123.txt) |
-| Retries with exponential backoff | [`reliability/`](SupportAgent/app/support_agent/reliability) | Unit tests |
+| Retries with exponential backoff, loop protection | [`reliability/`](SupportAgent/app/support_agent/reliability) | Unit tests, [traces](evidence/observability) |
 | Observability, failures traceable | [docs/observability.md](docs/observability.md) | [traces](evidence/observability) |
 
 The full list of evidence files is in [evidence/README.md](evidence/README.md).
@@ -80,30 +71,33 @@ SupportAgent/         AgentCore project (agentcore CLI)
   policies/           Cedar policies
   iam/                Extra IAM policy for the runtime role
   tests/              Agent unit tests
-scripts/              Gateway client, scenario runner, trace viewer, least-privilege check
+scripts/              Scenario runners (agent, gateway), trace viewer, least-privilege and account checks
 docs/                 Security and observability write-ups
 evidence/             Outputs from runs against the deployed system
 ```
 
 ## Deploy
 
-Prerequisites: an AWS account in `us-east-1` with CDK bootstrapped, Node.js 20+, the AgentCore CLI
+Prerequisites: an AWS account in `us-east-1`, Node.js 20+, the AgentCore CLI
 (`npm install -g @aws/agentcore`), the AWS CDK CLI, `uv`, and AWS credentials from `aws login` or IAM
-Identity Center. No access keys are needed.
+Identity Center. No access keys are needed. Enable CloudWatch Transaction Search once per account
+(CloudWatch → Application Signals → Transaction Search) so spans are searchable.
 
-1. Deploy the business tools:
+1. Bootstrap CDK and deploy the business tools:
    ```bash
    cd backend
+   cdk bootstrap
    cdk deploy SupportAgentBackend --outputs-file cdk-outputs.json
    ```
-2. Deploy the gateway, its targets and the policy engine:
+2. Deploy the agent runtime, memory, gateway, targets and policy engine:
    ```bash
    cd SupportAgent
    agentcore deploy
    ```
-   The Lambda ARNs in `agentcore.json` and the gateway ARN in `policies/*.cedar` are specific to this
-   account. In a new account, update them: deploy once without the policies, then add the policies
-   with the new gateway ARN and deploy again.
+   Some values are specific to the account: the Lambda ARNs in `agentcore.json`, the gateway ARN and
+   account in `policies/*.cedar`, and the account in `iam/runtime-bedrock-model-access.json`. In a
+   new account, update them and deploy twice: first without the policy engine, then add it with the
+   new gateway's ARN.
 3. Deploy gateway logging, tracing and the saved Logs Insights queries:
    ```bash
    cd backend
@@ -111,9 +105,16 @@ Identity Center. No access keys are needed.
    ```
 4. Verify:
    ```bash
-   uv run scripts/run_scenarios.py
+   uv run scripts/run_scenarios.py         # gateway-level scenarios
+   uv run scripts/run_agent_scenarios.py   # end-to-end through the deployed agent
    uv run scripts/check_least_privilege.py
    ```
+
+Talk to the deployed agent; the actor header names the end user, which scopes long-term memory:
+
+```bash
+agentcore invoke -H "X-Amzn-Bedrock-AgentCore-Runtime-Custom-Actor-Id: alice" "Why is my order 123 delayed?"
+```
 
 ## Test
 
@@ -124,44 +125,14 @@ cd SupportAgent && uv run --project app/support_agent pytest tests
 
 ## Run the agent locally
 
-`agentcore dev` runs the agent on your machine against the deployed gateway and policy. By default
-it uses Bedrock. While Bedrock is unavailable, it can use the Anthropic API instead. Add these lines
-to the git-ignored `SupportAgent/agentcore/.env.local`:
+`agentcore dev` runs the same agent on your machine against the deployed gateway and policy.
+It can also use the Anthropic API instead of Bedrock; add these lines to the git-ignored
+`SupportAgent/agentcore/.env.local`:
 
 ```
 MODEL_PROVIDER=anthropic
 ANTHROPIC_API_KEY=<your key>
 ```
-
-Name the end user in the actor header; long-term memory is scoped to it:
-
-```bash
-agentcore dev -H "X-Amzn-Bedrock-AgentCore-Runtime-Custom-Actor-Id: alice" "Why is my order 123 delayed?"
-```
-
-## Deploying the runtime and memory
-
-Once the account's AgentCore quotas are raised:
-
-1. Add the runtime back to `runtimes` in [`agentcore.json`](SupportAgent/agentcore/agentcore.json):
-   ```json
-   {
-     "name": "support_agent",
-     "build": "CodeZip",
-     "entrypoint": "main.py",
-     "codeLocation": "app/support_agent/",
-     "runtimeVersion": "PYTHON_3_14",
-     "networkMode": "PUBLIC",
-     "protocol": "HTTP",
-     "requestHeaderAllowlist": ["X-Amzn-Bedrock-AgentCore-Runtime-Custom-Actor-Id"],
-     "additionalPolicies": ["../../iam/runtime-bedrock-model-access.json"]
-   }
-   ```
-2. Add the memory, then deploy:
-   ```bash
-   agentcore add memory --name support_agentMemory --strategies USER_PREFERENCE
-   agentcore deploy
-   ```
 
 ## Tear down
 
@@ -180,5 +151,7 @@ cd backend && cdk destroy --all
 - **Errors come in two kinds.** Bad input and business-rule errors are returned to the model as data,
   and are never retried. Failures such as timeouts and HTTP 5xx fail the Lambda invocation, so the
   gateway reports `isError: true` and the agent retries them with backoff.
+- **Model choice.** Nova 2 Lite is an Amazon model, so it needs no Marketplace subscription. To use
+  another model, set `MODEL_ID` and allow that model in `iam/runtime-bedrock-model-access.json`.
 - **Known limitation:** refunds are not totalled per order, so several refunds under the limit can
   together exceed the order total.

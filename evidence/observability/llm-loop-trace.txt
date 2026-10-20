@@ -1,0 +1,106 @@
+# uv run scripts/show_trace.py 692c2292be104227e5ed46ad8d6bfda6
+Trace 692c2292be104227e5ed46ad8d6bfda6
+2026-10-20 18:25:37.916  AGENT   POST /invocations  status=UNSET  duration=7804ms  span=a8526b2c9fbc27c9 parent=f485842577f16949
+2026-10-20 18:25:38.179  AGENT   Bedrock AgentCore.ListEvents  status=UNSET  duration=49ms  span=cb90a2a02c3eae56 parent=a8526b2c9fbc27c9
+2026-10-20 18:25:38.229  AGENT   Bedrock AgentCore.ListEvents  status=UNSET  duration=41ms  span=736fa2e54d2a5c55 parent=a8526b2c9fbc27c9
+2026-10-20 18:25:38.271  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=94ms  span=b535bd498d5f27d8 parent=a8526b2c9fbc27c9
+2026-10-20 18:25:38.522  AGENT   mcp tools/list  status=OK  duration=202ms  span=6a303a346772aa8c parent=a8526b2c9fbc27c9
+2026-10-20 18:25:38.601  SPAN    AgentCore.Gateway.AuthorizeRequest  status=OK  duration=3ms  span=d63a3c0c11bf58b6 parent=c13822162aae04c3
+2026-10-20 18:25:38.601  SPAN    AgentCore.Gateway.InboundAuth  status=OK  duration=12ms  span=c13822162aae04c3 parent=a184991937b6f891
+2026-10-20 18:25:38.603  SPAN    AgentCore.Gateway.EvaluateRoutingRules  status=OK  duration=1ms  span=1086669e75aacadd parent=a184991937b6f891
+2026-10-20 18:25:38.604  GATEWAY       {"log": "Started processing request", "requestBody": "{id=1, method=tools/list, params={_meta={baggage=Self=1-6ad7b219-467a68f109c200983b207aa2,session.id=session-cf1062a4df7d09b9671c51eb4471a1d6, X-Amzn-Trace-Id=Root=1-692c2292-be104227e5ed46ad8d6bfda6;Parent=6a303a346772aa8c;Sampled=1, traceparent=00-692c2292be104227e5ed46ad8d6bfda6-6a303a346772aa8c-01}}, jsonrpc=2.0}"}
+2026-10-20 18:25:38.606  GATEWAY       {"log": "Received request for tools/list method"}
+2026-10-20 18:25:38.716  SPAN    AgentCore.Policy.PartiallyAuthorizeActions  status=OK  duration=92ms  span=f424d5ab047546b4 parent=a184991937b6f891
+2026-10-20 18:25:38.719  GATEWAY       {"responseBody": "{jsonrpc=2.0, id=1, result={tools=[{inputSchema={type=object, properties={customer_id={description=Customer ID in the form C-NNNN, for example \"C-1001\"., type=string}}, required=[customer_id]}, name=CustomersTarget___get_customer, description=Look up a customer by customer ID. Returns the customer's name, email, loyalty tier, member-since date and order IDs. Customer IDs look like \"C-1001\". To find out who placed an order, call get_order_status first and use the customer_id it returns.}, {inputSchema={type=object, properties={order_id={description=Numeric order ID, for example \"123\". Digits only, without '#' or other prefixes., type=string}}, required=[order_id]}, name=OrdersTarget___get_order_status, description=Look up an order by its order ID. Returns the order status, items, total, carrier, tracking number, estimated delivery date, the delay reason for delayed orders, and the customer_id of the customer who placed the order. Use it for any question about where an order is, why it is late, or what it contains.}, {inputSchema={type=object, properties={reason={description=Short reason for the refund, in the customer's words., type=string}, amount_cents={description=Refund amount in cents, for example 2550 for $25.50., type=integer}, idempotency_key={description=Unique ID for this refund operation, for example \"operation-123\". Reuse the same key when retrying the same refund so it is not issued twice., type=string}, order_id={description=Numeric ID of the order to refund, for example \"123\"., type=string}}, required=[amount_cents, idempotency_key, order_id, reason]}, name=RefundsTarget___refund_customer, description=Refund money for an order to the customer who placed it, on the original payment method. Returns the refund ID and status. If the refund is rejected, explain the reason to the customer.}]}}", "log": "Successfully processed request"}
+2026-10-20 18:25:38.720  SPAN    AgentCore.Gateway.ListTools  status=OK  duration=131ms  span=a184991937b6f891 parent=6a303a346772aa8c
+2026-10-20 18:25:38.730  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=96ms  span=bc193f5b7b485c26 parent=a8526b2c9fbc27c9
+2026-10-20 18:25:38.827  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=91ms  span=d53f7aaea12436e4 parent=04d91179f0e3269d
+2026-10-20 18:25:38.827  AGENT   invoke_agent Strands Agents  status=OK  duration=6893ms  span=04d91179f0e3269d parent=a8526b2c9fbc27c9
+2026-10-20 18:25:38.919  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=89ms  span=1762fd8b093f9f41 parent=04d91179f0e3269d
+2026-10-20 18:25:39.009  AGENT   Bedrock AgentCore.RetrieveMemoryRecords  status=UNSET  duration=257ms  span=58d83a079731918a parent=04d91179f0e3269d
+2026-10-20 18:25:39.269  AGENT   chat  status=OK  duration=703ms  span=a8ff295473f34561 parent=042160857be77520
+2026-10-20 18:25:39.269  AGENT   execute_event_loop_cycle  status=OK  duration=1172ms  span=042160857be77520 parent=04d91179f0e3269d
+2026-10-20 18:25:39.289  AGENT   chat us.amazon.nova-2-lite-v1:0  status=UNSET  duration=682ms  span=4209a0bacb4d6e38 parent=a8ff295473f34561
+2026-10-20 18:25:39.973  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=92ms  span=cf8cab5114f660bf parent=042160857be77520
+2026-10-20 18:25:40.066  AGENT   execute_tool OrdersTarget___get_order_status  status=OK  duration=181ms  span=6ee397674646cb67 parent=042160857be77520
+2026-10-20 18:25:40.067  AGENT   mcp tools/call OrdersTarget___get_order_status  status=OK  duration=179ms  span=624cc60534abea74 parent=6ee397674646cb67
+2026-10-20 18:25:40.093  SPAN    AgentCore.Gateway.AuthorizeRequest  status=OK  duration=5ms  span=952c91eee739b35d parent=d32bb2d323c0f89c
+2026-10-20 18:25:40.093  SPAN    AgentCore.Gateway.InboundAuth  status=OK  duration=12ms  span=d32bb2d323c0f89c parent=754b1c2acf571a3c
+2026-10-20 18:25:40.096  SPAN    AgentCore.Gateway.EvaluateRoutingRules  status=OK  duration=0ms  span=26161d0efead8675 parent=754b1c2acf571a3c
+2026-10-20 18:25:40.097  GATEWAY       {"log": "Started processing request", "requestBody": "{id=2, method=tools/call, params={name=OrdersTarget___get_order_status, _meta={baggage=Self=1-6ad7b219-467a68f109c200983b207aa2,session.id=session-cf1062a4df7d09b9671c51eb4471a1d6, X-Amzn-Trace-Id=Root=1-692c2292-be104227e5ed46ad8d6bfda6;Parent=624cc60534abea74;Sampled=1, traceparent=00-692c2292be104227e5ed46ad8d6bfda6-624cc60534abea74-01}, arguments={order_id=9002}}, jsonrpc=2.0}"}
+2026-10-20 18:25:40.102  GATEWAY       {"log": "Received request for tools/call method"}
+2026-10-20 18:25:40.199  SPAN    AgentCore.Policy.AuthorizeAction  status=OK  duration=49ms  span=e7d91f1f22f1e9e9 parent=754b1c2acf571a3c
+2026-10-20 18:25:40.201  GATEWAY       {"log": "Executing tool OrdersTarget___get_order_status from target UBTOEQ9AET"}
+2026-10-20 18:25:40.228  SPAN    support-get-order-status/LambdaService  status=UNSET  duration=0ms  span=76410d738fc01cb3 parent=754b1c2acf571a3c
+2026-10-20 18:25:40.234  SPAN    support-get-order-status/LambdaExecutionEnvironment  status=UNSET  duration=0ms  span=5783f20f286b4f3d parent=76410d738fc01cb3
+2026-10-20 18:25:40.236  SPAN    support-get-order-status/LambdaService  status=UNSET  duration=9ms  span=76410d738fc01cb3 parent=754b1c2acf571a3c
+2026-10-20 18:25:40.238  SPAN    AgentCore.Gateway.InvokeTool.OrdersTarget___get_order_status  status=OK  duration=37ms  span=e77d65ddd40f998b parent=754b1c2acf571a3c
+2026-10-20 18:25:40.238  SPAN    AgentCore.Gateway.TargetInvocation  status=OK  duration=34ms  span=72fff28925c7cd86 parent=e77d65ddd40f998b
+2026-10-20 18:25:40.240  GATEWAY       {"log": "Policy evaluation completed", "policy": {"decision": "ALLOW", "policyEngineArn": "arn:aws:bedrock-agentcore:us-east-1:536035781966:policy-engine/SupportAgent_SupportPolicyEngine-mnqt99vfh_", "determiningPolicies": ["AllowOrderLookup-nygx8yyxgh"], "principal": {"entityType": "AgentCore::IamEntity", "entityId": "arn:aws:sts::536035781966:assumed-role/AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn"}, "latencyMs": 49, "temporal_evaluation_invoked": false}}
+2026-10-20 18:25:40.240  GATEWAY       {"responseBody": "{jsonrpc=2.0, id=2, result={isError=false, content=[{type=text, text={\"order_id\":\"9002\",\"status\":\"STATUS_UPDATING\",\"message\":\"The order status is being recalculated. Call get_order_status again to get the final status.\"}}]}}", "log": "Successfully processed request"}
+2026-10-20 18:25:40.241  SPAN    AgentCore.Gateway.InvokeTool  status=OK  duration=160ms  span=754b1c2acf571a3c parent=624cc60534abea74
+2026-10-20 18:25:40.247  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=90ms  span=2284d2003a83a75c parent=042160857be77520
+2026-10-20 18:25:40.252  SPAN    Overhead/LambdaExecutionEnvironment  status=UNSET  duration=16ms  span=c1ebc0025bb25195 parent=5783f20f286b4f3d
+2026-10-20 18:25:40.253  SPAN    support-get-order-status/LambdaExecutionEnvironment  status=UNSET  duration=19ms  span=5783f20f286b4f3d parent=76410d738fc01cb3
+2026-10-20 18:25:40.338  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=101ms  span=b3313b88be23f03c parent=042160857be77520
+2026-10-20 18:25:40.441  AGENT   chat  status=OK  duration=889ms  span=0954d8fe6e974bb8 parent=eeef1813ab9c4622
+2026-10-20 18:25:40.441  AGENT   execute_event_loop_cycle  status=OK  duration=1356ms  span=eeef1813ab9c4622 parent=04d91179f0e3269d
+2026-10-20 18:25:40.442  AGENT   chat us.amazon.nova-2-lite-v1:0  status=UNSET  duration=887ms  span=d696fd28b78d69a6 parent=0954d8fe6e974bb8
+2026-10-20 18:25:41.331  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=86ms  span=8ec51b68af51a421 parent=eeef1813ab9c4622
+2026-10-20 18:25:41.418  AGENT   execute_tool OrdersTarget___get_order_status  status=OK  duration=186ms  span=57a7784c97ab7a8f parent=eeef1813ab9c4622
+2026-10-20 18:25:41.419  AGENT   mcp tools/call OrdersTarget___get_order_status  status=OK  duration=184ms  span=10dfe6ac3a0b6158 parent=57a7784c97ab7a8f
+2026-10-20 18:25:41.444  SPAN    AgentCore.Gateway.AuthorizeRequest  status=OK  duration=3ms  span=e6c78d6bcda15146 parent=5e8c57832015e8ab
+2026-10-20 18:25:41.444  SPAN    AgentCore.Gateway.InboundAuth  status=OK  duration=14ms  span=5e8c57832015e8ab parent=8f4df94e0909a1da
+2026-10-20 18:25:41.448  SPAN    AgentCore.Gateway.EvaluateRoutingRules  status=OK  duration=1ms  span=ddf6e067402290d6 parent=8f4df94e0909a1da
+2026-10-20 18:25:41.449  GATEWAY       {"log": "Started processing request", "requestBody": "{id=3, method=tools/call, params={name=OrdersTarget___get_order_status, _meta={baggage=Self=1-6ad7b219-467a68f109c200983b207aa2,session.id=session-cf1062a4df7d09b9671c51eb4471a1d6, X-Amzn-Trace-Id=Root=1-692c2292-be104227e5ed46ad8d6bfda6;Parent=10dfe6ac3a0b6158;Sampled=1, traceparent=00-692c2292be104227e5ed46ad8d6bfda6-10dfe6ac3a0b6158-01}, arguments={order_id=9002}}, jsonrpc=2.0}"}
+2026-10-20 18:25:41.453  GATEWAY       {"log": "Received request for tools/call method"}
+2026-10-20 18:25:41.556  SPAN    AgentCore.Policy.AuthorizeAction  status=OK  duration=58ms  span=b7ceeb375312d088 parent=8f4df94e0909a1da
+2026-10-20 18:25:41.557  GATEWAY       {"log": "Executing tool OrdersTarget___get_order_status from target UBTOEQ9AET"}
+2026-10-20 18:25:41.588  SPAN    support-get-order-status/LambdaService  status=UNSET  duration=0ms  span=4570c32a70c20f4a parent=8f4df94e0909a1da
+2026-10-20 18:25:41.593  SPAN    support-get-order-status/LambdaExecutionEnvironment  status=UNSET  duration=0ms  span=c0737665a5347d0d parent=4570c32a70c20f4a
+2026-10-20 18:25:41.595  SPAN    support-get-order-status/LambdaService  status=UNSET  duration=7ms  span=4570c32a70c20f4a parent=8f4df94e0909a1da
+2026-10-20 18:25:41.597  SPAN    AgentCore.Gateway.InvokeTool.OrdersTarget___get_order_status  status=OK  duration=40ms  span=a3abdaed6a888d6b parent=8f4df94e0909a1da
+2026-10-20 18:25:41.597  SPAN    AgentCore.Gateway.TargetInvocation  status=OK  duration=37ms  span=cea9b1fcb50a723f parent=a3abdaed6a888d6b
+2026-10-20 18:25:41.599  GATEWAY       {"log": "Policy evaluation completed", "policy": {"decision": "ALLOW", "policyEngineArn": "arn:aws:bedrock-agentcore:us-east-1:536035781966:policy-engine/SupportAgent_SupportPolicyEngine-mnqt99vfh_", "determiningPolicies": ["AllowOrderLookup-nygx8yyxgh"], "principal": {"entityType": "AgentCore::IamEntity", "entityId": "arn:aws:sts::536035781966:assumed-role/AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn"}, "latencyMs": 58, "temporal_evaluation_invoked": false}}
+2026-10-20 18:25:41.599  GATEWAY       {"responseBody": "{jsonrpc=2.0, id=3, result={isError=false, content=[{type=text, text={\"order_id\":\"9002\",\"status\":\"STATUS_UPDATING\",\"message\":\"The order status is being recalculated. Call get_order_status again to get the final status.\"}}]}}", "log": "Successfully processed request"}
+2026-10-20 18:25:41.600  SPAN    AgentCore.Gateway.InvokeTool  status=OK  duration=170ms  span=8f4df94e0909a1da parent=10dfe6ac3a0b6158
+2026-10-20 18:25:41.605  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=93ms  span=7aa3544d1824b76a parent=eeef1813ab9c4622
+2026-10-20 18:25:41.611  SPAN    Overhead/LambdaExecutionEnvironment  status=UNSET  duration=18ms  span=589ae55ddfc076d2 parent=c0737665a5347d0d
+2026-10-20 18:25:41.613  SPAN    support-get-order-status/LambdaExecutionEnvironment  status=UNSET  duration=19ms  span=c0737665a5347d0d parent=4570c32a70c20f4a
+2026-10-20 18:25:41.699  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=98ms  span=6f1a283116250be2 parent=eeef1813ab9c4622
+2026-10-20 18:25:41.797  AGENT   execute_event_loop_cycle  status=OK  duration=1352ms  span=f08674b0d0746465 parent=04d91179f0e3269d
+2026-10-20 18:25:41.798  AGENT   chat  status=OK  duration=898ms  span=6b952e33ea75173d parent=f08674b0d0746465
+2026-10-20 18:25:41.799  AGENT   chat us.amazon.nova-2-lite-v1:0  status=UNSET  duration=896ms  span=014f4bd4b6e87344 parent=6b952e33ea75173d
+2026-10-20 18:25:42.697  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=87ms  span=f1f0df670bf8a007 parent=f08674b0d0746465
+2026-10-20 18:25:42.784  AGENT   execute_tool OrdersTarget___get_order_status  status=OK  duration=171ms  span=a90340d3320721c8 parent=f08674b0d0746465
+2026-10-20 18:25:42.785  AGENT   mcp tools/call OrdersTarget___get_order_status  status=OK  duration=169ms  span=407dda5942e7424b parent=a90340d3320721c8
+2026-10-20 18:25:42.808  SPAN    AgentCore.Gateway.AuthorizeRequest  status=OK  duration=3ms  span=fe60c6f97c361e61 parent=44439d0f8e7d2091
+2026-10-20 18:25:42.808  SPAN    AgentCore.Gateway.InboundAuth  status=OK  duration=12ms  span=44439d0f8e7d2091 parent=ebd223491ceb3ab8
+2026-10-20 18:25:42.812  GATEWAY       {"log": "Started processing request", "requestBody": "{id=4, method=tools/call, params={name=OrdersTarget___get_order_status, _meta={baggage=Self=1-6ad7b219-467a68f109c200983b207aa2,session.id=session-cf1062a4df7d09b9671c51eb4471a1d6, X-Amzn-Trace-Id=Root=1-692c2292-be104227e5ed46ad8d6bfda6;Parent=407dda5942e7424b;Sampled=1, traceparent=00-692c2292be104227e5ed46ad8d6bfda6-407dda5942e7424b-01}, arguments={order_id=9002}}, jsonrpc=2.0}"}
+2026-10-20 18:25:42.812  SPAN    AgentCore.Gateway.EvaluateRoutingRules  status=OK  duration=1ms  span=c05c906ccc786a9d parent=ebd223491ceb3ab8
+2026-10-20 18:25:42.816  GATEWAY       {"log": "Received request for tools/call method"}
+2026-10-20 18:25:42.909  SPAN    AgentCore.Policy.AuthorizeAction  status=OK  duration=43ms  span=9547412753ce5f83 parent=ebd223491ceb3ab8
+2026-10-20 18:25:42.910  GATEWAY       {"log": "Executing tool OrdersTarget___get_order_status from target UBTOEQ9AET"}
+2026-10-20 18:25:42.940  SPAN    support-get-order-status/LambdaService  status=UNSET  duration=0ms  span=5360e250c23f48ee parent=ebd223491ceb3ab8
+2026-10-20 18:25:42.944  SPAN    support-get-order-status/LambdaExecutionEnvironment  status=UNSET  duration=0ms  span=e2def5feec201668 parent=5360e250c23f48ee
+2026-10-20 18:25:42.945  SPAN    Overhead/LambdaExecutionEnvironment  status=UNSET  duration=0ms  span=04cb7c41aa1859a9 parent=e2def5feec201668
+2026-10-20 18:25:42.947  SPAN    support-get-order-status/LambdaExecutionEnvironment  status=UNSET  duration=2ms  span=e2def5feec201668 parent=5360e250c23f48ee
+2026-10-20 18:25:42.947  SPAN    support-get-order-status/LambdaService  status=UNSET  duration=7ms  span=5360e250c23f48ee parent=ebd223491ceb3ab8
+2026-10-20 18:25:42.948  SPAN    AgentCore.Gateway.InvokeTool.OrdersTarget___get_order_status  status=OK  duration=38ms  span=89cbaf13b8c55de4 parent=ebd223491ceb3ab8
+2026-10-20 18:25:42.948  SPAN    AgentCore.Gateway.TargetInvocation  status=OK  duration=35ms  span=1cff328650c54a71 parent=89cbaf13b8c55de4
+2026-10-20 18:25:42.949  GATEWAY       {"responseBody": "{jsonrpc=2.0, id=4, result={isError=false, content=[{type=text, text={\"order_id\":\"9002\",\"status\":\"STATUS_UPDATING\",\"message\":\"The order status is being recalculated. Call get_order_status again to get the final status.\"}}]}}", "log": "Successfully processed request"}
+2026-10-20 18:25:42.950  GATEWAY       {"log": "Policy evaluation completed", "policy": {"decision": "ALLOW", "policyEngineArn": "arn:aws:bedrock-agentcore:us-east-1:536035781966:policy-engine/SupportAgent_SupportPolicyEngine-mnqt99vfh_", "determiningPolicies": ["AllowOrderLookup-nygx8yyxgh"], "principal": {"entityType": "AgentCore::IamEntity", "entityId": "arn:aws:sts::536035781966:assumed-role/AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn"}, "latencyMs": 43, "temporal_evaluation_invoked": false}}
+2026-10-20 18:25:42.951  SPAN    AgentCore.Gateway.InvokeTool  status=OK  duration=155ms  span=ebd223491ceb3ab8 parent=407dda5942e7424b
+2026-10-20 18:25:42.956  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=95ms  span=8e0f03e32f77e6a7 parent=f08674b0d0746465
+2026-10-20 18:25:43.052  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=97ms  span=2245f9305e76130f parent=f08674b0d0746465
+2026-10-20 18:25:43.150  AGENT   chat  status=OK  duration=482ms  span=646c0e278f8cecd6 parent=d3f76e6b90e3b820
+2026-10-20 18:25:43.150  AGENT   execute_event_loop_cycle  status=OK  duration=756ms  span=d3f76e6b90e3b820 parent=04d91179f0e3269d
+2026-10-20 18:25:43.151  AGENT   chat us.amazon.nova-2-lite-v1:0  status=UNSET  duration=480ms  span=044934152d3e3c13 parent=646c0e278f8cecd6
+2026-10-20 18:25:43.632  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=102ms  span=9c1cb06836c87d7c parent=d3f76e6b90e3b820
+2026-10-20 18:25:43.735  AGENT   execute_tool OrdersTarget___get_order_status  status=ERROR  duration=1ms  span=6b3a593ea948089b parent=d3f76e6b90e3b820
+2026-10-20 18:25:43.737  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=85ms  span=7f47b9e9683d1227 parent=d3f76e6b90e3b820
+2026-10-20 18:25:43.823  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=82ms  span=2c80f500e37938a9 parent=d3f76e6b90e3b820
+2026-10-20 18:25:43.906  AGENT   chat  status=OK  duration=1730ms  span=4bead9c15b2a5d93 parent=8d66d96d7beadf79
+2026-10-20 18:25:43.906  AGENT   execute_event_loop_cycle  status=OK  duration=1814ms  span=8d66d96d7beadf79 parent=04d91179f0e3269d
+2026-10-20 18:25:43.907  AGENT   chat us.amazon.nova-2-lite-v1:0  status=UNSET  duration=1728ms  span=67ed8e9406e44b4b parent=4bead9c15b2a5d93
+2026-10-20 18:25:45.637  AGENT   Bedrock AgentCore.CreateEvent  status=UNSET  duration=82ms  span=7ab1083d7a71fbf9 parent=8d66d96d7beadf79

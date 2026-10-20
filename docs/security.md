@@ -22,16 +22,18 @@ local development, kept in the git-ignored `SupportAgent/agentcore/.env.local`. 
 [`scripts/check_least_privilege.py`](../scripts/check_least_privilege.py) asks the IAM policy
 simulator what each deployed role may do. It checks both what the role needs and nearby actions it
 must not have, such as invoking other functions, writing to the table from read-only tools, or
-deleting and scanning refunds. All 18 checks pass:
+deleting and scanning refunds, calling another gateway, or invoking a model other than the agent's.
+All 25 checks pass:
 [evidence/security/least-privilege.txt](../evidence/security/least-privilege.txt).
 
 ### The runtime's model permission
 
 The AgentCore CLI generates the runtime role with `bedrock:InvokeModel*` on every foundation model
 and inference profile. [`iam/runtime-bedrock-model-access.json`](../SupportAgent/iam/runtime-bedrock-model-access.json)
-attaches an explicit deny for every model except the agent's own, which narrows the effective
-permission to that one model. It is referenced from the runtime's `additionalPolicies`, and the
-synthesized template has been checked. It takes effect when the runtime is deployed.
+attaches an explicit deny for every model except the agent's own (Amazon Nova 2 Lite), which narrows
+the effective permission to that one model. It is attached through the runtime's
+`additionalPolicies`. In the least-privilege check, a call to Claude Haiku from the runtime role
+evaluates to `explicitDeny`.
 
 ## Authorization with AgentCore Policy
 
@@ -47,13 +49,15 @@ before the target runs, and anything no policy permits is denied by default.
 All three are scoped to `AgentCore::IamEntity` callers from this AWS account. Validation rejected an
 earlier version, which permitted any principal, as "Overly Permissive".
 
-The gateway logs every decision, with the deciding policy and the caller:
+The gateway logs every decision, with the deciding policy and the caller. This one is the agent's
+runtime role being denied a $5,000 refund:
 
 ```json
 {"log": "Policy evaluation denied request",
  "policy": {"decision": "DENY", "reason": "No policy applies to the request (denied by default).",
             "determiningPolicies": [],
-            "principal": {"entityType": "AgentCore::IamEntity", "entityId": "arn:aws:iam::062788795353:user/admin"}}}
+            "principal": {"entityType": "AgentCore::IamEntity",
+                          "entityId": "arn:aws:sts::536035781966:assumed-role/AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn"}}}
 ```
 
 Verified results:
@@ -82,12 +86,21 @@ The model can be manipulated, so it is not trusted to enforce the refund limit:
   Order 777 is deliberately worth $7,500, so a $5,000 refund passes those checks and only the policy
   can stop it.
 
-Evidence, from calling the gateway directly:
-- the `prompt-injection-refund-denied` scenario in [evidence/scenarios](../evidence/scenarios);
-- the trace in [evidence/observability/policy-deny-trace.txt](../evidence/observability/policy-deny-trace.txt),
-  which shows the DENY and no Lambda span.
+Evidence, through the deployed agent:
+- the `agent-prompt-injection` and `agent-refund-over-limit` scenarios in
+  [evidence/scenarios](../evidence/scenarios). In both, the model requested a refund over the limit
+  and no refund record was created;
+- the trace in [evidence/observability/prompt-injection-deny-trace.txt](../evidence/observability/prompt-injection-deny-trace.txt).
+  It shows `execute_tool RefundsTarget___refund_customer` ending in ERROR, the gateway's
+  `Policy evaluation denied request`, and no refund Lambda span.
 
-Running the same prompt through the agent is pending model access.
+The same calls made directly to the gateway, with no model involved, are denied in the same way:
+the `refund-over-limit-denied` and `prompt-injection-refund-denied` scenarios in the gateway run.
+
+**The model's explanation is not the control.** In an early run, the model described the denial
+with an invented reason ("it would exceed the order total"). The money was protected either way:
+the decision belongs to the policy, and the model only reports it. The system prompt now tells the
+model to say that company policy does not allow the request, and not to guess a cause.
 
 ## Memory isolation
 
@@ -101,11 +114,15 @@ every user's preferences together.
 - it validates the format, so the ID can't escape its memory namespace;
 - a request without the header gets an actor confined to its own session.
 
+Verified in the `agent-memory-across-sessions` scenario: a new session for the same user recalls
+the preferred region (eu-west-1), and a different user asking the same question does not get it.
+
 ## Known limitations
 
 - The Cedar policies and `agentcore.json` contain this account's gateway and Lambda ARNs, and must be
   updated when deploying elsewhere.
-- The policies admit any IAM caller from this account that has `InvokeGateway` permission. Once the
-  runtime is deployed, they can be narrowed to the runtime role's ARN.
+- The policies admit any IAM caller from this account that has `InvokeGateway` permission, which
+  includes developers testing the gateway directly. They could be narrowed to the runtime role's ARN
+  alone.
 - Refunds are not totalled per order, so several refunds under the limit can together exceed the
   order total.
