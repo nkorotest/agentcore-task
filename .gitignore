@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# CDK
+cdk.out/
+cdk-outputs.json
+
+# Local environment files and secrets
+.env
+.env.*
+!.env.example
