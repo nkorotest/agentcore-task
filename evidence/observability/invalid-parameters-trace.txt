@@ -1,0 +1,13 @@
+# uv run scripts/show_trace.py 6ad76cb3788117b0470080c1107f76fb
+Trace 6ad76cb3788117b0470080c1107f76fb
+2026-10-20 13:29:23.756  GATEWAY       {"log": "Started processing request", "requestBody": "{id=1, method=tools/call, params={name=RefundsTarget___refund_customer, arguments={reason=test, idempotency_key=invalid-params-1, order_id=123, amount_cents=-500}}, jsonrpc=2.0}"}
+2026-10-20 13:29:23.760  GATEWAY       {"log": "Received request for tools/call method"}
+2026-10-20 13:29:23.855  GATEWAY       {"log": "Executing tool RefundsTarget___refund_customer from target DQG8MVZIHO"}
+2026-10-20 13:29:23.891  SPAN    support-refund-customer/LambdaService  status=UNSET  duration=0ms  span=4ff2395bb79d0bd8 parent=d9e343365b186436
+2026-10-20 13:29:24.370  SPAN    Init/LambdaExecutionEnvironment  status=UNSET  duration=346ms  span=272cb2c5ff02c15d parent=5111393aad178fce
+2026-10-20 13:29:24.374  SPAN    support-refund-customer/LambdaExecutionEnvironment  status=UNSET  duration=0ms  span=5111393aad178fce parent=4ff2395bb79d0bd8
+2026-10-20 13:29:24.376  SPAN    Overhead/LambdaExecutionEnvironment  status=UNSET  duration=1ms  span=8ec640d2d7f2b300 parent=5111393aad178fce
+2026-10-20 13:29:24.377  SPAN    support-refund-customer/LambdaService  status=UNSET  duration=486ms  span=4ff2395bb79d0bd8 parent=d9e343365b186436
+2026-10-20 13:29:24.378  SPAN    support-refund-customer/LambdaExecutionEnvironment  status=UNSET  duration=3ms  span=5111393aad178fce parent=4ff2395bb79d0bd8
+2026-10-20 13:29:24.380  GATEWAY       {"log": "Policy evaluation completed", "policy": {"decision": "ALLOW", "policyEngineArn": "arn:aws:bedrock-agentcore:us-east-1:062788795353:policy-engine/SupportAgent_SupportPolicyEngine-t1ubmtpe44", "determiningPolicies": ["RefundLimit-9f2y9y5l84"], "principal": {"entityType": "AgentCore::IamEntity", "entityId": "arn:aws:iam::062788795353:user/admin"}, "latencyMs": 47, "temporal_evaluation_invoked": false}}
+2026-10-20 13:29:24.380  GATEWAY       {"responseBody": "{jsonrpc=2.0, id=1, result={isError=false, content=[{type=text, text={\"error\":{\"code\":\"INVALID_PARAMETER\",\"message\":\"'amount_cents' must be at least 1.\",\"retryable\":false}}}]}}", "log": "Successfully processed request"}

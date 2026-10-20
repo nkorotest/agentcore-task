@@ -1,0 +1,13 @@
+# uv run scripts/show_trace.py 6ad76c942657341540dd7ea31c7b2c9b
+Trace 6ad76c942657341540dd7ea31c7b2c9b
+2026-10-20 13:28:52.295  GATEWAY       {"log": "Started processing request", "requestBody": "{id=1, method=tools/call, params={name=OrdersTarget___get_order_status, arguments={order_id=9001}}, jsonrpc=2.0}"}
+2026-10-20 13:28:52.299  GATEWAY       {"log": "Received request for tools/call method"}
+2026-10-20 13:28:52.402  GATEWAY       {"log": "Executing tool OrdersTarget___get_order_status from target FWBFGK65NU"}
+2026-10-20 13:28:52.453  SPAN    support-get-order-status/LambdaService  status=UNSET  duration=0ms  span=3efaf08bb9c3c8dc parent=512e3a60610c79e3
+2026-10-20 13:28:52.652  SPAN    Init/LambdaExecutionEnvironment  status=UNSET  duration=80ms  span=63fa0710bdfbaa00 parent=c0f8b25cd9a2f349
+2026-10-20 13:28:52.655  SPAN    support-get-order-status/LambdaExecutionEnvironment  status=UNSET  duration=0ms  span=c0f8b25cd9a2f349 parent=3efaf08bb9c3c8dc
+2026-10-20 13:28:57.657  SPAN    support-get-order-status/LambdaService  status=ERROR  duration=5205ms  span=3efaf08bb9c3c8dc parent=512e3a60610c79e3
+2026-10-20 13:28:57.659  GATEWAY ERROR {"log": "An error occurred while executing tool: OrdersTarget___get_order_status from target FWBFGK65NU"}
+2026-10-20 13:28:57.661  GATEWAY       {"log": "Policy evaluation completed", "policy": {"decision": "ALLOW", "policyEngineArn": "arn:aws:bedrock-agentcore:us-east-1:062788795353:policy-engine/SupportAgent_SupportPolicyEngine-t1ubmtpe44", "determiningPolicies": ["AllowOrderLookup-s9ff7bc1h5"], "principal": {"entityType": "AgentCore::IamEntity", "entityId": "arn:aws:iam::062788795353:user/admin"}, "latencyMs": 52, "temporal_evaluation_invoked": false}}
+2026-10-20 13:28:57.661  GATEWAY ERROR {"log": "{\"errorType\":\"Sandbox.Timedout\",\"errorMessage\":\"RequestId: 2b2cae0d-b6c0-4be6-afd1-c98483c729b7 Error: Task timed out after 5.00 seconds\"}"}
+2026-10-20 13:28:57.668  SPAN    support-get-order-status/LambdaExecutionEnvironment  status=ERROR  duration=5000ms  span=c0f8b25cd9a2f349 parent=3efaf08bb9c3c8dc

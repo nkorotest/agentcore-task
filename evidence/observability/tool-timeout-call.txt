@@ -1,0 +1,6 @@
+# tool-timeout: uv run scripts/call_gateway_tool.py call OrdersTarget___get_order_status '{"order_id": "9001"}'
+# started: 2026-10-20T13:28:25Z
+Tool call failed (isError=true).
+An internal error occurred. Please retry later.
+# exit code: 1
+# finished: 2026-10-20T13:28:57Z

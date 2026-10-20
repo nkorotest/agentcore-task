@@ -1,0 +1,6 @@
+# http-500: uv run scripts/call_gateway_tool.py call CustomersTarget___get_customer '{"customer_id": "C-5000"}'
+# started: 2026-10-20T13:29:30Z
+Tool call failed (isError=true).
+An internal error occurred. Please retry later.
+# exit code: 1
+# finished: 2026-10-20T13:29:55Z
