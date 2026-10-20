@@ -2,21 +2,34 @@
   "targets": {
     "default": {
       "resources": {
+        "runtimes": {
+          "support_agent": {
+            "runtimeId": "SupportAgent_support_agent-iw9cHg6JdG",
+            "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:536035781966:runtime/SupportAgent_support_agent-iw9cHg6JdG",
+            "roleArn": "arn:aws:iam::536035781966:role/AgentCore-SupportAgent-de-ApplicationAgentSupportAg-P6DllA0GELMn"
+          }
+        },
+        "memories": {
+          "support_agentMemory": {
+            "memoryId": "SupportAgent_support_agentMemory-94nXD28Jw5",
+            "memoryArn": "arn:aws:bedrock-agentcore:us-east-1:536035781966:memory/SupportAgent_support_agentMemory-94nXD28Jw5"
+          }
+        },
         "mcp": {
           "gateways": {
             "SupportGateway": {
-              "gatewayId": "supportagent-supportgateway-igxisl7sc6",
-              "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:062788795353:gateway/supportagent-supportgateway-igxisl7sc6",
-              "gatewayUrl": "https://supportagent-supportgateway-igxisl7sc6.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+              "gatewayId": "supportagent-supportgateway-v0etrfiz7f",
+              "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:536035781966:gateway/supportagent-supportgateway-v0etrfiz7f",
+              "gatewayUrl": "https://supportagent-supportgateway-v0etrfiz7f.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
               "targets": {
                 "OrdersTarget": {
-                  "targetId": "FWBFGK65NU"
+                  "targetId": "UBTOEQ9AET"
                 },
                 "RefundsTarget": {
-                  "targetId": "DQG8MVZIHO"
+                  "targetId": "RLL8U5VGGA"
                 },
                 "CustomersTarget": {
-                  "targetId": "QVFIHRIRRC"
+                  "targetId": "FN34FX9GX6"
                 }
               }
             }
@@ -24,29 +37,29 @@
         },
         "policyEngines": {
           "SupportPolicyEngine": {
-            "policyEngineId": "SupportAgent_SupportPolicyEngine-t1ubmtpe44",
-            "policyEngineArn": "arn:aws:bedrock-agentcore:us-east-1:062788795353:policy-engine/SupportAgent_SupportPolicyEngine-t1ubmtpe44"
+            "policyEngineId": "SupportAgent_SupportPolicyEngine-mnqt99vfh_",
+            "policyEngineArn": "arn:aws:bedrock-agentcore:us-east-1:536035781966:policy-engine/SupportAgent_SupportPolicyEngine-mnqt99vfh_"
           }
         },
         "policies": {
           "SupportPolicyEngine/AllowOrderLookup": {
-            "policyId": "AllowOrderLookup-s9ff7bc1h5",
-            "policyArn": "arn:aws:bedrock-agentcore:us-east-1:062788795353:policy-engine/SupportAgent_SupportPolicyEngine-t1ubmtpe44/policy/AllowOrderLookup-s9ff7bc1h5",
+            "policyId": "AllowOrderLookup-nygx8yyxgh",
+            "policyArn": "arn:aws:bedrock-agentcore:us-east-1:536035781966:policy-engine/SupportAgent_SupportPolicyEngine-mnqt99vfh_/policy/AllowOrderLookup-nygx8yyxgh",
             "engineName": "SupportPolicyEngine"
           },
           "SupportPolicyEngine/AllowCustomerLookup": {
-            "policyId": "AllowCustomerLookup-qo6ifzon80",
-            "policyArn": "arn:aws:bedrock-agentcore:us-east-1:062788795353:policy-engine/SupportAgent_SupportPolicyEngine-t1ubmtpe44/policy/AllowCustomerLookup-qo6ifzon80",
+            "policyId": "AllowCustomerLookup-ntxnqnr2zl",
+            "policyArn": "arn:aws:bedrock-agentcore:us-east-1:536035781966:policy-engine/SupportAgent_SupportPolicyEngine-mnqt99vfh_/policy/AllowCustomerLookup-ntxnqnr2zl",
             "engineName": "SupportPolicyEngine"
           },
           "SupportPolicyEngine/RefundLimit": {
-            "policyId": "RefundLimit-9f2y9y5l84",
-            "policyArn": "arn:aws:bedrock-agentcore:us-east-1:062788795353:policy-engine/SupportAgent_SupportPolicyEngine-t1ubmtpe44/policy/RefundLimit-9f2y9y5l84",
+            "policyId": "RefundLimit-rxmn_sraul",
+            "policyArn": "arn:aws:bedrock-agentcore:us-east-1:536035781966:policy-engine/SupportAgent_SupportPolicyEngine-mnqt99vfh_/policy/RefundLimit-rxmn_sraul",
             "engineName": "SupportPolicyEngine"
           }
         },
         "stackName": "AgentCore-SupportAgent-default",
-        "deployHash": "16aa39cd32b02d93"
+        "deployHash": "3d74875e7199c330"
       }
     }
   }

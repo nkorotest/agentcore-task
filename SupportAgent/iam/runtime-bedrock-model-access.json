@@ -10,8 +10,8 @@
         "bedrock:CountTokens"
       ],
       "NotResource": [
-        "arn:aws:bedrock:*:062788795353:inference-profile/us.anthropic.claude-haiku-5-5",
-        "arn:aws:bedrock:*::foundation-model/anthropic.claude-haiku-5-5*"
+        "arn:aws:bedrock:*:536035781966:inference-profile/us.amazon.nova-2-lite-v1:0",
+        "arn:aws:bedrock:*::foundation-model/amazon.nova-2-lite-v1:0"
       ]
     }
   ]

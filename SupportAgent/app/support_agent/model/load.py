@@ -4,7 +4,7 @@ from botocore.config import Config
 from strands.models import Model
 from strands.models.bedrock import BedrockModel
 
-DEFAULT_BEDROCK_MODEL_ID = "us.anthropic.claude-haiku-5-5"
+DEFAULT_BEDROCK_MODEL_ID = "us.amazon.nova-2-lite-v1:0"
 DEFAULT_ANTHROPIC_MODEL_ID = "claude-haiku-5-5"
 
 # Adaptive retry mode: exponential backoff with jitter plus client-side rate limiting on throttling.

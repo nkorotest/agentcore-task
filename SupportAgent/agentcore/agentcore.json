@@ -7,8 +7,37 @@
     "agentcore:created-by": "agentcore-cli",
     "agentcore:project-name": "SupportAgent"
   },
-  "runtimes": [],
-  "memories": [],
+  "runtimes": [
+    {
+      "name": "support_agent",
+      "build": "CodeZip",
+      "entrypoint": "main.py",
+      "codeLocation": "app/support_agent/",
+      "runtimeVersion": "PYTHON_3_14",
+      "networkMode": "PUBLIC",
+      "protocol": "HTTP",
+      "requestHeaderAllowlist": [
+        "X-Amzn-Bedrock-AgentCore-Runtime-Custom-Actor-Id"
+      ],
+      "additionalPolicies": [
+        "../../iam/runtime-bedrock-model-access.json"
+      ]
+    }
+  ],
+  "memories": [
+    {
+      "name": "support_agentMemory",
+      "eventExpiryDuration": 30,
+      "strategies": [
+        {
+          "type": "USER_PREFERENCE",
+          "namespaceTemplates": [
+            "/users/{actorId}/preferences"
+          ]
+        }
+      ]
+    }
+  ],
   "knowledgeBases": [],
   "credentials": [],
   "evaluators": [],
@@ -23,7 +52,7 @@
           "name": "OrdersTarget",
           "targetType": "lambdaFunctionArn",
           "lambdaFunctionArn": {
-            "lambdaArn": "arn:aws:lambda:us-east-1:062788795353:function:support-get-order-status",
+            "lambdaArn": "arn:aws:lambda:us-east-1:536035781966:function:support-get-order-status",
             "toolSchemaFile": "../backend/tool_schemas/orders.json"
           }
         },
@@ -31,7 +60,7 @@
           "name": "CustomersTarget",
           "targetType": "lambdaFunctionArn",
           "lambdaFunctionArn": {
-            "lambdaArn": "arn:aws:lambda:us-east-1:062788795353:function:support-get-customer",
+            "lambdaArn": "arn:aws:lambda:us-east-1:536035781966:function:support-get-customer",
             "toolSchemaFile": "../backend/tool_schemas/customers.json"
           }
         },
@@ -39,7 +68,7 @@
           "name": "RefundsTarget",
           "targetType": "lambdaFunctionArn",
           "lambdaFunctionArn": {
-            "lambdaArn": "arn:aws:lambda:us-east-1:062788795353:function:support-refund-customer",
+            "lambdaArn": "arn:aws:lambda:us-east-1:536035781966:function:support-refund-customer",
             "toolSchemaFile": "../backend/tool_schemas/refunds.json"
           }
         }
@@ -61,7 +90,7 @@
         {
           "name": "AllowOrderLookup",
           "description": "Allow order status lookups by IAM callers from this account",
-          "statement": "// IAM callers from this AWS account (the agent's runtime role, developers) may look up orders.\npermit (\n  principal is AgentCore::IamEntity,\n  action == AgentCore::Action::\"OrdersTarget___get_order_status\",\n  resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:062788795353:gateway/supportagent-supportgateway-igxisl7sc6\"\n)\nwhen { principal.id like \"arn:aws:*::062788795353:*\" };",
+          "statement": "// IAM callers from this AWS account (the agent's runtime role, developers) may look up orders.\npermit (\n  principal is AgentCore::IamEntity,\n  action == AgentCore::Action::\"OrdersTarget___get_order_status\",\n  resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:536035781966:gateway/supportagent-supportgateway-v0etrfiz7f\"\n)\nwhen { principal.id like \"arn:aws:*::536035781966:*\" };",
           "sourceFile": "policies/allow_order_lookup.cedar",
           "validationMode": "FAIL_ON_ANY_FINDINGS",
           "enforcementMode": "ACTIVE",
@@ -70,7 +99,7 @@
         {
           "name": "AllowCustomerLookup",
           "description": "Allow customer profile lookups by IAM callers from this account",
-          "statement": "// IAM callers from this AWS account (the agent's runtime role, developers) may look up customers.\npermit (\n  principal is AgentCore::IamEntity,\n  action == AgentCore::Action::\"CustomersTarget___get_customer\",\n  resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:062788795353:gateway/supportagent-supportgateway-igxisl7sc6\"\n)\nwhen { principal.id like \"arn:aws:*::062788795353:*\" };",
+          "statement": "// IAM callers from this AWS account (the agent's runtime role, developers) may look up customers.\npermit (\n  principal is AgentCore::IamEntity,\n  action == AgentCore::Action::\"CustomersTarget___get_customer\",\n  resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:536035781966:gateway/supportagent-supportgateway-v0etrfiz7f\"\n)\nwhen { principal.id like \"arn:aws:*::536035781966:*\" };",
           "sourceFile": "policies/allow_customer_lookup.cedar",
           "validationMode": "FAIL_ON_ANY_FINDINGS",
           "enforcementMode": "ACTIVE",
@@ -79,7 +108,7 @@
         {
           "name": "RefundLimit",
           "description": "Allow refunds up to and including 1000 USD by IAM callers from this account",
-          "statement": "// IAM callers from this AWS account may issue refunds of up to and including $1,000.00\n// (100000 cents). Larger refunds match no permit policy, so the policy engine denies them before\n// the refund Lambda is invoked, whatever the model was told or decided.\npermit (\n  principal is AgentCore::IamEntity,\n  action == AgentCore::Action::\"RefundsTarget___refund_customer\",\n  resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:062788795353:gateway/supportagent-supportgateway-igxisl7sc6\"\n)\nwhen {\n  principal.id like \"arn:aws:*::062788795353:*\" &&\n  context.input.amount_cents <= 100000\n};",
+          "statement": "// IAM callers from this AWS account may issue refunds of up to and including $1,000.00\n// (100000 cents). Larger refunds match no permit policy, so the policy engine denies them before\n// the refund Lambda is invoked, whatever the model was told or decided.\npermit (\n  principal is AgentCore::IamEntity,\n  action == AgentCore::Action::\"RefundsTarget___refund_customer\",\n  resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:536035781966:gateway/supportagent-supportgateway-v0etrfiz7f\"\n)\nwhen {\n  principal.id like \"arn:aws:*::536035781966:*\" &&\n  context.input.amount_cents <= 100000\n};",
           "sourceFile": "policies/refund_limit.cedar",
           "validationMode": "FAIL_ON_ANY_FINDINGS",
           "enforcementMode": "ACTIVE",
