@@ -1,0 +1,7 @@
+// IAM callers from this AWS account (the agent's runtime role, developers) may look up orders.
+permit (
+  principal is AgentCore::IamEntity,
+  action == AgentCore::Action::"OrdersTarget___get_order_status",
+  resource == AgentCore::Gateway::"arn:aws:bedrock-agentcore:us-east-1:062788795353:gateway/supportagent-supportgateway-igxisl7sc6"
+)
+when { principal.id like "arn:aws:*::062788795353:*" };

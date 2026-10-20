@@ -46,10 +46,48 @@
       ],
       "authorizerType": "AWS_IAM",
       "enableSemanticSearch": false,
-      "exceptionLevel": "NONE"
+      "exceptionLevel": "NONE",
+      "policyEngineConfiguration": {
+        "policyEngineName": "SupportPolicyEngine",
+        "mode": "ENFORCE"
+      }
     }
   ],
-  "policyEngines": [],
+  "policyEngines": [
+    {
+      "name": "SupportPolicyEngine",
+      "description": "Authorizes every SupportGateway tool call; denies anything not explicitly permitted",
+      "policies": [
+        {
+          "name": "AllowOrderLookup",
+          "description": "Allow order status lookups by IAM callers from this account",
+          "statement": "// IAM callers from this AWS account (the agent's runtime role, developers) may look up orders.\npermit (\n  principal is AgentCore::IamEntity,\n  action == AgentCore::Action::\"OrdersTarget___get_order_status\",\n  resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:062788795353:gateway/supportagent-supportgateway-igxisl7sc6\"\n)\nwhen { principal.id like \"arn:aws:*::062788795353:*\" };",
+          "sourceFile": "policies/allow_order_lookup.cedar",
+          "validationMode": "FAIL_ON_ANY_FINDINGS",
+          "enforcementMode": "ACTIVE",
+          "authorizationPhase": "INITIATE"
+        },
+        {
+          "name": "AllowCustomerLookup",
+          "description": "Allow customer profile lookups by IAM callers from this account",
+          "statement": "// IAM callers from this AWS account (the agent's runtime role, developers) may look up customers.\npermit (\n  principal is AgentCore::IamEntity,\n  action == AgentCore::Action::\"CustomersTarget___get_customer\",\n  resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:062788795353:gateway/supportagent-supportgateway-igxisl7sc6\"\n)\nwhen { principal.id like \"arn:aws:*::062788795353:*\" };",
+          "sourceFile": "policies/allow_customer_lookup.cedar",
+          "validationMode": "FAIL_ON_ANY_FINDINGS",
+          "enforcementMode": "ACTIVE",
+          "authorizationPhase": "INITIATE"
+        },
+        {
+          "name": "RefundLimit",
+          "description": "Allow refunds up to and including 1000 USD by IAM callers from this account",
+          "statement": "// IAM callers from this AWS account may issue refunds of up to and including $1,000.00\n// (100000 cents). Larger refunds match no permit policy, so the policy engine denies them before\n// the refund Lambda is invoked, whatever the model was told or decided.\npermit (\n  principal is AgentCore::IamEntity,\n  action == AgentCore::Action::\"RefundsTarget___refund_customer\",\n  resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:062788795353:gateway/supportagent-supportgateway-igxisl7sc6\"\n)\nwhen {\n  principal.id like \"arn:aws:*::062788795353:*\" &&\n  context.input.amount_cents <= 100000\n};",
+          "sourceFile": "policies/refund_limit.cedar",
+          "validationMode": "FAIL_ON_ANY_FINDINGS",
+          "enforcementMode": "ACTIVE",
+          "authorizationPhase": "INITIATE"
+        }
+      ]
+    }
+  ],
   "configBundles": [],
   "abTests": [],
   "harnesses": [],

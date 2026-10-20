@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Any
 
 from mcp import ClientSession
+from mcp.shared.exceptions import McpError
 from mcp_proxy_for_aws.client import aws_iam_streamablehttp_client
 
 GATEWAY_NAME = "SupportGateway"
@@ -92,7 +93,12 @@ async def run(args: argparse.Namespace) -> int:
                 print(tool.name)
             return 0
 
-        result = await session.call_tool(args.tool, json.loads(args.arguments))
+        try:
+            result = await session.call_tool(args.tool, json.loads(args.arguments))
+        except McpError as error:
+            # The gateway rejects calls itself (for example a policy DENY) with a JSON-RPC error.
+            print(f"Gateway rejected the call: {error.error.message}", file=sys.stderr)
+            return 2
         print_result(result)
         if result.isError:
             print("Tool call failed (isError=true).", file=sys.stderr)

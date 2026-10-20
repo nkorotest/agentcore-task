@@ -22,8 +22,31 @@
             }
           }
         },
+        "policyEngines": {
+          "SupportPolicyEngine": {
+            "policyEngineId": "SupportAgent_SupportPolicyEngine-t1ubmtpe44",
+            "policyEngineArn": "arn:aws:bedrock-agentcore:us-east-1:062788795353:policy-engine/SupportAgent_SupportPolicyEngine-t1ubmtpe44"
+          }
+        },
+        "policies": {
+          "SupportPolicyEngine/AllowOrderLookup": {
+            "policyId": "AllowOrderLookup-s9ff7bc1h5",
+            "policyArn": "arn:aws:bedrock-agentcore:us-east-1:062788795353:policy-engine/SupportAgent_SupportPolicyEngine-t1ubmtpe44/policy/AllowOrderLookup-s9ff7bc1h5",
+            "engineName": "SupportPolicyEngine"
+          },
+          "SupportPolicyEngine/AllowCustomerLookup": {
+            "policyId": "AllowCustomerLookup-qo6ifzon80",
+            "policyArn": "arn:aws:bedrock-agentcore:us-east-1:062788795353:policy-engine/SupportAgent_SupportPolicyEngine-t1ubmtpe44/policy/AllowCustomerLookup-qo6ifzon80",
+            "engineName": "SupportPolicyEngine"
+          },
+          "SupportPolicyEngine/RefundLimit": {
+            "policyId": "RefundLimit-9f2y9y5l84",
+            "policyArn": "arn:aws:bedrock-agentcore:us-east-1:062788795353:policy-engine/SupportAgent_SupportPolicyEngine-t1ubmtpe44/policy/RefundLimit-9f2y9y5l84",
+            "engineName": "SupportPolicyEngine"
+          }
+        },
         "stackName": "AgentCore-SupportAgent-default",
-        "deployHash": "c9a66c2663fdfc70"
+        "deployHash": "16aa39cd32b02d93"
       }
     }
   }
