@@ -1,0 +1,6 @@
+{
+  "app": "uv run python app.py",
+  "context": {
+    "faultInjection": true
+  }
+}

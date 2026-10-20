@@ -1,0 +1,31 @@
+[project]
+name = "support-backend"
+version = "0.1.0"
+description = "Business tools (AWS Lambda) and infrastructure (AWS CDK) behind the support agent's AgentCore Gateway."
+requires-python = ">=3.13"
+# The Lambda handlers use only the standard library and the boto3 bundled with the Lambda runtime.
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "aws-cdk-lib>=2.200.0",
+    "constructs>=10.4.0",
+    "boto3>=1.40.0",
+    "moto[dynamodb]>=5.1.0",
+    "pytest>=8.4.0",
+    "ruff>=0.13.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]

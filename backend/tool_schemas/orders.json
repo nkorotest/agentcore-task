@@ -1,0 +1,16 @@
+[
+  {
+    "name": "get_order_status",
+    "description": "Look up an order by its order ID. Returns the order status, items, total, carrier, tracking number, estimated delivery date, the delay reason for delayed orders, and the customer_id of the customer who placed the order. Use it for any question about where an order is, why it is late, or what it contains.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "Numeric order ID, for example \"123\". Digits only, without '#' or other prefixes."
+        }
+      },
+      "required": ["order_id"]
+    }
+  }
+]

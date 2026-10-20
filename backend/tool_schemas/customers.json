@@ -1,0 +1,16 @@
+[
+  {
+    "name": "get_customer",
+    "description": "Look up a customer by customer ID. Returns the customer's name, email, loyalty tier, member-since date and order IDs. Customer IDs look like \"C-1001\". To find out who placed an order, call get_order_status first and use the customer_id it returns.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "Customer ID in the form C-NNNN, for example \"C-1001\"."
+        }
+      },
+      "required": ["customer_id"]
+    }
+  }
+]

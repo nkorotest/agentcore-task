@@ -1,0 +1,28 @@
+[
+  {
+    "name": "refund_customer",
+    "description": "Refund money for an order to the customer who placed it, on the original payment method. Returns the refund ID and status. If the refund is rejected, explain the reason to the customer.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "Numeric ID of the order to refund, for example \"123\"."
+        },
+        "amount_cents": {
+          "type": "integer",
+          "description": "Refund amount in cents, for example 2550 for $25.50."
+        },
+        "reason": {
+          "type": "string",
+          "description": "Short reason for the refund, in the customer's words."
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "Unique ID for this refund operation, for example \"operation-123\". Reuse the same key when retrying the same refund so it is not issued twice."
+        }
+      },
+      "required": ["order_id", "amount_cents", "reason", "idempotency_key"]
+    }
+  }
+]
