@@ -1,10 +1,7 @@
-"""Session and end-user identity for an agent request.
+"""Session and end-user (actor) IDs for a request.
 
-AgentCore Runtime authenticates the caller (IAM), but does not forward its own user-ID header to
-agent code. The trusted caller, such as the support web app, names the end user in a custom header,
-which the runtime forwards because it is on the runtime's request header allowlist. That ID scopes
-long-term memory, so it must never fall back to a shared default: a request without it gets an
-actor confined to its own session.
+The runtime does not pass its user ID to agent code, so the caller sends the actor ID in an
+allowlisted custom header. Without it, the actor is scoped to the session, never shared.
 """
 
 import re

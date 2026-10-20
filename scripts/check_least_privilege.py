@@ -2,11 +2,9 @@
 # requires-python = ">=3.12"
 # dependencies = ["boto3>=1.40.0"]
 # ///
-"""Check the deployed IAM roles against the least-privilege matrix with the IAM policy simulator.
+"""Check the deployed IAM roles with the IAM policy simulator.
 
-Every role must be allowed exactly what its component needs, and nothing tried below beyond it.
-
-    uv run scripts/check_least_privilege.py
+uv run scripts/check_least_privilege.py
 """
 
 import json

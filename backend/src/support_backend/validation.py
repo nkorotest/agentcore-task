@@ -1,7 +1,4 @@
-"""Input validation for tool arguments.
-
-Gateway tool schemas only declare types, so the handlers enforce formats and ranges themselves.
-"""
+"""Input validation. Gateway tool schemas only declare types, so formats are checked here."""
 
 import re
 from typing import Any

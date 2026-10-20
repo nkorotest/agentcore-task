@@ -1,8 +1,4 @@
-"""Structured logging and the handler wrapper shared by all tools.
-
-Lambda writes these log records as JSON (see the CDK stack), so the Gateway metadata fields below
-can be used in CloudWatch Logs Insights to join a tool invocation with the agent's trace.
-"""
+"""Logging and the handler wrapper shared by all tools."""
 
 import functools
 import logging

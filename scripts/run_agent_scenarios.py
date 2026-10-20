@@ -2,14 +2,12 @@
 # requires-python = ">=3.12"
 # dependencies = ["boto3>=1.40.0"]
 # ///
-"""Run the required scenarios against the deployed agent on AgentCore Runtime and record them.
+"""Run the required scenarios through the deployed agent and save the results.
 
-Each turn is sent to the runtime with its own session ID, end-user (actor) ID and W3C trace ID, so
-every scenario can be looked up afterwards with scripts/show_trace.py. Results are printed and saved
-as JSON under evidence/scenarios/.
+Each turn gets its own session, actor and trace ID (see show_trace.py).
 
     uv run scripts/run_agent_scenarios.py                 # all scenarios
-    uv run scripts/run_agent_scenarios.py memory refund   # scenarios whose name contains a word
+    uv run scripts/run_agent_scenarios.py memory refund   # only matching scenarios
 """
 
 import json

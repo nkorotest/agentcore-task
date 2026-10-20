@@ -1,15 +1,7 @@
-"""Retry transient tool failures with exponential backoff and full jitter.
+"""Retry transient tool failures with exponential backoff and jitter.
 
-A retry re-sends the exact same tool call, including its idempotency key, so retrying
-refund_customer after a timeout returns the refund that may already exist instead of issuing a
-second one.
-
-What counts as transient is decided from the tool result, because the Strands MCP client turns
-every failure into an error result:
-- the gateway reports a failed or timed-out target with isError=true ("Please retry later");
-- transport failures arrive as "Tool execution failed: <reason>".
-Results that carry a business error ({"error": {...}}) succeed at the protocol level and are never
-retried, and neither are policy denials: retrying cannot change the gateway's decision.
+A retry re-sends the same call, including its idempotency key. Gateway target failures
+(isError) and transport errors are retried; business errors and policy denials are not.
 """
 
 import asyncio

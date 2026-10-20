@@ -1,8 +1,4 @@
-"""Deterministic failure fixtures for the observability scenarios.
-
-They are active only when FAULT_INJECTION_ENABLED=true. With the flag off, these IDs behave like any
-other unknown ID.
-"""
+"""Fault fixtures for the failure scenarios, active only when FAULT_INJECTION_ENABLED=true."""
 
 # get_order_status sleeps past the Lambda timeout -> "tool timeout".
 SLOW_ORDER_ID = "9001"

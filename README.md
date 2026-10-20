@@ -5,12 +5,7 @@ Bedrock AgentCore. It answers order questions, looks up customers and issues ref
 tools exposed by AgentCore Gateway over MCP. A Cedar policy on the gateway, not the prompt, decides
 which refunds are allowed.
 
-## Deployment
-
-Everything runs in AWS account `536035781966`, region `us-east-1`: the agent on AgentCore Runtime,
-AgentCore Memory, the gateway with its three Lambda tools, the Cedar policy engine, and
-CloudWatch observability. The model is Amazon Nova 2 Lite (`us.amazon.nova-2-lite-v1:0`) on Amazon
-Bedrock.
+Deployed in AWS account `536035781966` (`us-east-1`), with Amazon Nova 2 Lite as the model.
 
 ## Architecture
 
@@ -41,9 +36,8 @@ flowchart LR
     refunds -.-> cw
 ```
 
-A refund request flows like this: the model calls `refund_customer` through the gateway, the policy
-engine evaluates the call, and only an ALLOW reaches the Lambda. The Lambda writes the refund with a
-conditional put keyed on the idempotency key, so a retried call returns the existing refund.
+Every tool call passes the policy engine before its Lambda runs. Refunds are written with a
+conditional put on the idempotency key, so a retried call returns the existing refund.
 
 ## Requirements and evidence
 
@@ -59,99 +53,37 @@ conditional put keyed on the idempotency key, so a retried call returns the exis
 | Retries with exponential backoff, loop protection | [`reliability/`](SupportAgent/app/support_agent/reliability) | Unit tests, [traces](evidence/observability) |
 | Observability, failures traceable | [docs/observability.md](docs/observability.md) | [traces](evidence/observability) |
 
-The full list of evidence files is in [evidence/README.md](evidence/README.md).
+All evidence files: [evidence/README.md](evidence/README.md).
 
 ## Repository layout
 
 ```
-backend/              Business tools: Lambda handlers, CDK stacks, tool schemas, unit tests
-SupportAgent/         AgentCore project (agentcore CLI)
-  agentcore/          agentcore.json: runtime, gateway, targets, policy engine
-  app/support_agent/  The Strands agent (runtime code)
-  policies/           Cedar policies
-  iam/                Extra IAM policy for the runtime role
-  tests/              Agent unit tests
-scripts/              Scenario runners (agent, gateway), trace viewer, least-privilege and account checks
-docs/                 Security and observability write-ups
+backend/              Tool Lambdas, CDK stacks, tool schemas, unit tests
+SupportAgent/         AgentCore project: agentcore.json, agent code, Cedar policies, agent tests
+scripts/              Scenario runners, trace viewer, least-privilege check
+docs/                 Deployment, security and observability
 evidence/             Outputs from runs against the deployed system
 ```
 
-## Deploy
+## Quick start
 
-Prerequisites: an AWS account in `us-east-1`, Node.js 20+, the AgentCore CLI
-(`npm install -g @aws/agentcore`), the AWS CDK CLI, `uv`, and AWS credentials from `aws login` or IAM
-Identity Center. No access keys are needed. Enable CloudWatch Transaction Search once per account
-(CloudWatch → Application Signals → Transaction Search) so spans are searchable.
-
-1. Bootstrap CDK and deploy the business tools:
-   ```bash
-   cd backend
-   cdk bootstrap
-   cdk deploy SupportAgentBackend --outputs-file cdk-outputs.json
-   ```
-2. Deploy the agent runtime, memory, gateway, targets and policy engine:
-   ```bash
-   cd SupportAgent
-   agentcore deploy
-   ```
-   Some values are specific to the account: the Lambda ARNs in `agentcore.json`, the gateway ARN and
-   account in `policies/*.cedar`, and the account in `iam/runtime-bedrock-model-access.json`. In a
-   new account, update them and deploy twice: first without the policy engine, then add it with the
-   new gateway's ARN.
-3. Deploy gateway logging, tracing and the saved Logs Insights queries:
-   ```bash
-   cd backend
-   cdk deploy SupportAgentObservability
-   ```
-4. Verify:
-   ```bash
-   uv run scripts/run_scenarios.py         # gateway-level scenarios
-   uv run scripts/run_agent_scenarios.py   # end-to-end through the deployed agent
-   uv run scripts/check_least_privilege.py
-   ```
-
-Talk to the deployed agent; the actor header names the end user, which scopes long-term memory:
+From the repository root:
 
 ```bash
-agentcore invoke -H "X-Amzn-Bedrock-AgentCore-Runtime-Custom-Actor-Id: alice" "Why is my order 123 delayed?"
+(cd backend && cdk deploy SupportAgentBackend --outputs-file cdk-outputs.json)
+(cd SupportAgent && agentcore deploy)
+uv run scripts/run_agent_scenarios.py
 ```
 
-## Test
+Full steps, tests and teardown: [docs/deployment.md](docs/deployment.md).
 
-```bash
-cd backend && uv run pytest
-cd SupportAgent && uv run --project app/support_agent pytest tests
-```
+## Key decisions
 
-## Run the agent locally
-
-`agentcore dev` runs the same agent on your machine against the deployed gateway and policy.
-It can also use the Anthropic API instead of Bedrock; add these lines to the git-ignored
-`SupportAgent/agentcore/.env.local`:
-
-```
-MODEL_PROVIDER=anthropic
-ANTHROPIC_API_KEY=<your key>
-```
-
-## Tear down
-
-```bash
-cd SupportAgent && agentcore remove all && agentcore deploy
-cd backend && cdk destroy --all
-```
-
-## Design notes
-
-- **Money is integer cents.** Cedar has no decimal type, so the refund limit is
-  `context.input.amount_cents <= 100000`.
-- **The refund limit lives only in the Cedar policy.** The backend checks that a refund does not exceed
-  the order total, but it does not duplicate the $1,000 rule. The system prompt does not mention the
-  rule either.
-- **Errors come in two kinds.** Bad input and business-rule errors are returned to the model as data,
-  and are never retried. Failures such as timeouts and HTTP 5xx fail the Lambda invocation, so the
-  gateway reports `isError: true` and the agent retries them with backoff.
-- **Model choice.** Nova 2 Lite is an Amazon model, so it needs no Marketplace subscription. To use
-  another model, set `MODEL_ID` and allow that model in `iam/runtime-bedrock-model-access.json`.
+- **The refund limit is a Cedar policy on the gateway**, not a prompt instruction or backend check.
+  Amounts are integer cents (Cedar has no decimals), so the rule is `amount_cents <= 100000`.
+- **Two kinds of errors.** Bad input and business-rule errors are returned to the model as data and
+  never retried. Timeouts and HTTP 5xx fail the Lambda invocation, and the agent retries them with
+  backoff.
+- **Model:** Amazon Nova 2 Lite. It is set by `MODEL_ID`; the runtime role may invoke only that model.
 - **Known limitation:** refunds are not totalled per order, so several refunds under the limit can
   together exceed the order total.

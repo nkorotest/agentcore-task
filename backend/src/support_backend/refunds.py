@@ -1,12 +1,8 @@
-"""refund_customer tool: an idempotent refund for an order.
+"""refund_customer tool.
 
-The idempotency key is the table's partition key and every refund is written with a conditional put,
-so a retried operation can never create a second refund. A retry with the same key and the same
-order and amount returns the stored refund (replayed=True); the same key with a different order or
-amount is rejected as a conflict.
-
-The $1,000 approval limit is deliberately not checked here: it is enforced by the Cedar policy on
-the Gateway, before this function is invoked.
+Refunds are written with a conditional put on the idempotency key, so a retried call returns
+the stored refund instead of creating a second one. The $1,000 limit is enforced by the gateway
+policy, not here.
 """
 
 import hashlib

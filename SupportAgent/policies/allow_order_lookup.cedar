@@ -1,4 +1,4 @@
-// IAM callers from this AWS account (the agent's runtime role, developers) may look up orders.
+// Order lookups by IAM callers from this account.
 permit (
   principal is AgentCore::IamEntity,
   action == AgentCore::Action::"OrdersTarget___get_order_status",

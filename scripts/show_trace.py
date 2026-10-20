@@ -2,17 +2,10 @@
 # requires-python = ">=3.12"
 # dependencies = ["boto3>=1.40.0"]
 # ///
-"""Print everything recorded for one trace, in time order: agent, gateway and Lambda.
+"""Print one trace in time order: agent spans, gateway spans and logs, Lambda spans.
 
-- Agent spans: written by AgentCore Runtime to the "spans" stream of the runtime's log group.
-- Gateway and Lambda spans: CloudWatch Transaction Search (the aws/spans log group).
-- Gateway log entries (requests, policy decisions, errors): the gateway's application log group.
-
-All of them carry the same trace ID, so one ID follows a request from the agent's model call through
-the gateway's policy decision to the Lambda invocation.
-
-    uv run scripts/show_trace.py <trace-id>
-    uv run scripts/show_trace.py --session <runtime-session-id>   # every trace of an agent session
+uv run scripts/show_trace.py <trace-id>
+uv run scripts/show_trace.py --session <runtime-session-id>
 """
 
 import argparse

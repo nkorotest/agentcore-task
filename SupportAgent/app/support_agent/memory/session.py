@@ -1,34 +1,34 @@
 import os
 import uuid
-from typing import Optional
 
-from bedrock_agentcore.memory.integrations.strands.config import AgentCoreMemoryConfig, RetrievalConfig
-from bedrock_agentcore.memory.integrations.strands.session_manager import AgentCoreMemorySessionManager
+from bedrock_agentcore.memory.integrations.strands.config import (
+    AgentCoreMemoryConfig,
+    RetrievalConfig,
+)
+from bedrock_agentcore.memory.integrations.strands.session_manager import (
+    AgentCoreMemorySessionManager,
+)
 
 MEMORY_ID = os.getenv("MEMORY_SUPPORT_AGENTMEMORY_ID")
 REGION = os.getenv("AWS_REGION")
 
-def get_memory_session_manager(session_id: Optional[str], actor_id: str) -> Optional[AgentCoreMemorySessionManager]:
+
+def get_memory_session_manager(
+    session_id: str | None, actor_id: str
+) -> AgentCoreMemorySessionManager | None:
     if not MEMORY_ID:
         return None
 
-    # AgentCoreMemoryConfig rejects None; OAuth/CUSTOM_JWT callers can reach us
-    # without a runtime session header, so synthesize one when absent.
-    session_id = session_id or uuid.uuid4().hex
-
-    # Long-term memory holds one strategy: user preferences, extracted per actor (end user), so a
-    # preference stated in one session is available in that user's later sessions.
+    # User preferences are extracted per actor, so they carry over to the actor's later sessions.
     retrieval_config = {
         f"/users/{actor_id}/preferences": RetrievalConfig(top_k=5, relevance_score=0.5),
     }
-
     return AgentCoreMemorySessionManager(
         AgentCoreMemoryConfig(
             memory_id=MEMORY_ID,
-            session_id=session_id,
+            session_id=session_id or uuid.uuid4().hex,
             actor_id=actor_id,
             retrieval_config=retrieval_config,
         ),
-        REGION
+        REGION,
     )
-

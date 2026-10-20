@@ -1,8 +1,4 @@
-"""Synthetic orders and customers standing in for the order-management and CRM systems.
-
-All names and emails are fictional. Order 777 is deliberately large ($7,500) so that a $5,000 refund
-passes the backend's own checks and can only be stopped by the Gateway policy.
-"""
+"""Sample orders and customers. Order 777 ($7,500) is used to test the $1,000 refund limit."""
 
 from typing import Any
 

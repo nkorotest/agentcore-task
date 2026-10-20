@@ -1,10 +1,4 @@
-"""Stop the model from looping on tool calls within a single request.
-
-Each agent request may make at most max_tool_calls tool calls, and at most max_identical_calls
-calls with the same tool name and input. Calls beyond that are cancelled with a message telling
-the model to answer with what it has. ToolRetry re-runs a call under the same toolUseId, so
-retries are not counted as new calls.
-"""
+"""Cancel tool calls once a request makes too many, or repeats the same call too often."""
 
 import json
 import logging

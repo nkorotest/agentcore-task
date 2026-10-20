@@ -1,8 +1,4 @@
-"""Shared MCP access to SupportGateway for the scripts in this folder.
-
-Requests are SigV4-signed with your local AWS credentials (AWS_PROFILE), exactly like the agent's
-own requests, so Gateway policies apply to them in the same way.
-"""
+"""SigV4-signed MCP access to SupportGateway, shared by the scripts."""
 
 import json
 import os

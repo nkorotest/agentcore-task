@@ -2,15 +2,12 @@
 # requires-python = ">=3.12"
 # dependencies = ["mcp>=1.28.1,<2", "mcp-proxy-for-aws>=1.1.0"]
 # ///
-r"""Call SupportGateway tools directly over MCP, bypassing the agent and the LLM.
+"""Call SupportGateway tools directly over MCP (no agent, no model).
 
     uv run scripts/call_gateway_tool.py list
-    uv run scripts/call_gateway_tool.py call OrdersTarget___get_order_status ^
-        "{\"order_id\": \"123\"}"
+    uv run scripts/call_gateway_tool.py call OrdersTarget___get_order_status '{"order_id": "123"}'
 
-Exit codes: 0 the tool returned a result, 1 the tool failed (isError), 2 the gateway rejected the
-call (for example a policy DENY). The gateway URL is read from the AgentCore deployed state; pass
---url to override it.
+Exit codes: 0 result, 1 tool error, 2 rejected by the gateway (e.g. policy DENY).
 """
 
 import argparse

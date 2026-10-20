@@ -2,14 +2,9 @@
 # requires-python = ">=3.12"
 # dependencies = ["mcp>=1.28.1,<2", "mcp-proxy-for-aws>=1.1.0"]
 # ///
-"""Run the required scenarios that go through AgentCore Gateway and record the results.
+"""Run the required scenarios directly against the gateway and save the results.
 
-Each scenario calls the deployed gateway directly over MCP, with no LLM in the loop, and checks the
-outcome. The results are printed and saved as JSON under evidence/scenarios/.
-
-    uv run scripts/run_scenarios.py
-
-Requires the backend deployed with faultInjection=true (the default in backend/cdk.json).
+uv run scripts/run_scenarios.py
 """
 
 import asyncio

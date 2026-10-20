@@ -1,6 +1,4 @@
-// IAM callers from this AWS account may issue refunds of up to and including $1,000.00
-// (100000 cents). Larger refunds match no permit policy, so the policy engine denies them before
-// the refund Lambda is invoked, whatever the model was told or decided.
+// Refunds up to $1,000.00 (100000 cents); anything larger is denied by default.
 permit (
   principal is AgentCore::IamEntity,
   action == AgentCore::Action::"RefundsTarget___refund_customer",

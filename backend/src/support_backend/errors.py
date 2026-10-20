@@ -1,11 +1,7 @@
-"""Error contract shared by all tools.
+"""Tool errors.
 
-ToolError subclasses are problems with the request itself (bad input, unknown IDs, business-rule
-violations). They are returned to the agent as a structured result so the model can explain or
-correct them, and retrying the same call would not help.
-
-Any other exception, including UpstreamServiceError, fails the Lambda invocation. AgentCore Gateway
-reports it as a tool error and the caller may retry with backoff.
+ToolError is a problem with the request; it is returned to the agent as data and not retried.
+Any other exception fails the invocation, so the gateway reports it and the caller can retry.
 """
 
 from typing import Any

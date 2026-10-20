@@ -1,9 +1,4 @@
-"""Observability for the AgentCore Gateway and the tool Lambdas.
-
-AgentCore does not configure gateway logging itself, so this stack delivers the gateway's
-application logs to CloudWatch Logs and its traces to X-Ray (Transaction Search), and saves the
-Logs Insights queries used to investigate tool failures.
-"""
+"""Gateway log and trace delivery, and saved Logs Insights queries."""
 
 from aws_cdk import RemovalPolicy, Stack
 from aws_cdk import aws_logs as logs

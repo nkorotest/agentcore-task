@@ -1,8 +1,4 @@
-"""Infrastructure for the support agent's business tools.
-
-One Lambda function per Gateway tool, each with its own IAM role, plus the refunds table. Only the
-refund function can touch the table, and only with the two actions it uses.
-"""
+"""Tool Lambdas (one role each) and the refunds table."""
 
 from pathlib import Path
 
