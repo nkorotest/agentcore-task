@@ -1,43 +1,19 @@
+from pathlib import Path
 from typing import Any
-from collections import OrderedDict
-from strands import Agent, tool
-import asyncio
+from strands import Agent
 from strands.agent.conversation_manager.null_conversation_manager import NullConversationManager
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
 from model.load import load_model
-from mcp_client.client import get_streamable_http_mcp_client
+from mcp_client.client import get_support_gateway_mcp_client
 from memory.session import get_memory_session_manager
 
 app = BedrockAgentCoreApp()
 log = app.logger
 
-# Define a Streamable HTTP MCP Client
-mcp_clients = [get_streamable_http_mcp_client()]
+SYSTEM_PROMPT = (Path(__file__).parent / "prompts" / "system_prompt.md").read_text(encoding="utf-8")
 
-DEFAULT_SYSTEM_PROMPT = """
-You are a helpful assistant. Use tools when appropriate.
-
-"""
-
-
-# Define a collection of tools used by the model
-tools = []
-
-_INLINE_FUNCTION_NAMES = set()
-
-# Define a simple function tool
-@tool
-def add_numbers(a: int, b: int) -> int:
-    """Return the sum of two numbers"""
-    return a+b
-tools.append(add_numbers)
-
-
-
-# Add MCP client to tools if available
-for mcp_client in mcp_clients:
-    if mcp_client:
-        tools.append(mcp_client)
+# All business tools come from AgentCore Gateway over MCP.
+tools = [get_support_gateway_mcp_client()]
 
 
 def _make_conversation_manager():
@@ -53,7 +29,7 @@ def agent_factory():
                 model=load_model(),
                 session_manager=get_memory_session_manager(session_id, _actor_id),
                 conversation_manager=_make_conversation_manager(),
-                system_prompt=DEFAULT_SYSTEM_PROMPT,
+                system_prompt=SYSTEM_PROMPT,
                 tools=tools,
                 hooks=[
                 ],
@@ -110,29 +86,6 @@ def _extract_prompt(payload: dict):
     if not isinstance(prompt, str):
         raise ValueError("prompt must be a string")
     return prompt
-
-
-def _has_inline_function_call(messages) -> bool:
-    """Return True if messages contains an assistant toolUse for an inline function tool."""
-    if not _INLINE_FUNCTION_NAMES or not isinstance(messages, list):
-        return False
-    for msg in messages:
-        if msg.get("role") == "assistant":
-            for block in msg.get("content", []):
-                if isinstance(block, dict) and block.get("toolUse", {}).get("name") in _INLINE_FUNCTION_NAMES:
-                    return True
-    return False
-
-
-def _is_inline_function_call(event: dict) -> bool:
-    """Check if a contentBlockStart event is for an inline function tool."""
-    if not _INLINE_FUNCTION_NAMES:
-        return False
-    cbs = event.get("contentBlockStart", {})
-    start = cbs.get("start", {})
-    tool_use = start.get("toolUse") if isinstance(start, dict) else None
-    return tool_use is not None and tool_use.get("name") in _INLINE_FUNCTION_NAMES
-
 
 
 @app.entrypoint

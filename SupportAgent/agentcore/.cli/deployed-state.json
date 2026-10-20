@@ -1,3 +1,30 @@
 {
-  "targets": {}
+  "targets": {
+    "default": {
+      "resources": {
+        "mcp": {
+          "gateways": {
+            "SupportGateway": {
+              "gatewayId": "supportagent-supportgateway-igxisl7sc6",
+              "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:062788795353:gateway/supportagent-supportgateway-igxisl7sc6",
+              "gatewayUrl": "https://supportagent-supportgateway-igxisl7sc6.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+              "targets": {
+                "OrdersTarget": {
+                  "targetId": "FWBFGK65NU"
+                },
+                "RefundsTarget": {
+                  "targetId": "DQG8MVZIHO"
+                },
+                "CustomersTarget": {
+                  "targetId": "QVFIHRIRRC"
+                }
+              }
+            }
+          }
+        },
+        "stackName": "AgentCore-SupportAgent-default",
+        "deployHash": "c9a66c2663fdfc70"
+      }
+    }
+  }
 }

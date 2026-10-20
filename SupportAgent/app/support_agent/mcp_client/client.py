@@ -1,14 +1,26 @@
 import os
-import logging
-from mcp.client.streamable_http import streamablehttp_client
+
+from mcp_proxy_for_aws.client import aws_iam_streamablehttp_client
 from strands.tools.mcp.mcp_client import MCPClient
 
-logger = logging.getLogger(__name__)
+# Set by AgentCore for the deployed runtime and by `agentcore dev` locally.
+GATEWAY_URL_ENV_VAR = "AGENTCORE_GATEWAY_SUPPORTGATEWAY_URL"
 
-# ExaAI provides information about code through web searches, crawling and code context searches through their platform. Requires no authentication
-EXAMPLE_MCP_ENDPOINT = "https://mcp.exa.ai/mcp"
 
-def get_streamable_http_mcp_client() -> MCPClient:
-    """Returns an MCP Client compatible with Strands"""
-    # to use an MCP server that supports bearer authentication, add headers={"Authorization": f"Bearer {access_token}"}
-    return MCPClient(lambda: streamablehttp_client(EXAMPLE_MCP_ENDPOINT))
+def get_support_gateway_mcp_client() -> MCPClient:
+    """MCP client for SupportGateway, which exposes the order, customer and refund tools.
+
+    Requests are SigV4-signed with the runtime's IAM role (the gateway uses AWS_IAM inbound auth),
+    so no credentials are stored in code or configuration.
+    """
+    url = os.environ.get(GATEWAY_URL_ENV_VAR)
+    if not url:
+        raise RuntimeError(
+            f"{GATEWAY_URL_ENV_VAR} is not set. Deploy the gateway with `agentcore deploy` first."
+        )
+    region = os.environ.get("AWS_REGION") or os.environ.get("AWS_DEFAULT_REGION")
+    return MCPClient(
+        lambda: aws_iam_streamablehttp_client(
+            url, aws_service="bedrock-agentcore", aws_region=region
+        )
+    )
