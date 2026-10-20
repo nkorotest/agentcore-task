@@ -5,7 +5,7 @@ Bedrock AgentCore. It answers order questions, looks up customers and issues ref
 tools exposed by AgentCore Gateway over MCP. A Cedar policy on the gateway, not the prompt, decides
 which refunds are allowed.
 
-Deployed in AWS account `536035781966` (`us-east-1`), with Amazon Nova 2 Lite as the model.
+Deployed in AWS account with Amazon Nova 2 Lite as the model.
 
 ## Architecture
 
