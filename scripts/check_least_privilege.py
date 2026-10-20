@@ -19,6 +19,8 @@ import boto3
 REPO_ROOT = Path(__file__).resolve().parent.parent
 BACKEND_OUTPUTS = REPO_ROOT / "backend" / "cdk-outputs.json"
 DEPLOYED_STATE = REPO_ROOT / "SupportAgent" / "agentcore" / ".cli" / "deployed-state.json"
+AGENT_MODEL = "us.amazon.nova-2-lite-v1:0"
+OTHER_MODEL = "us.anthropic.claude-haiku-5-5"
 TOOL_FUNCTIONS = ("support-get-order-status", "support-get-customer", "support-refund-customer")
 
 
@@ -37,13 +39,21 @@ def discover() -> dict[str, str]:
         name: lambda_client.get_function_configuration(FunctionName=name) for name in TOOL_FUNCTIONS
     }
     table_name = json.loads(BACKEND_OUTPUTS.read_text())["SupportAgentBackend"]["RefundsTableName"]
-    gateways = json.loads(DEPLOYED_STATE.read_text())["targets"]["default"]["resources"]["mcp"]
-    gateway_id = gateways["gateways"]["SupportGateway"]["gatewayId"]
+    resources = json.loads(DEPLOYED_STATE.read_text())["targets"]["default"]["resources"]
+    gateway = resources["mcp"]["gateways"]["SupportGateway"]
+    account, region = gateway["gatewayArn"].split(":")[4], gateway["gatewayArn"].split(":")[3]
     table_arn = session.client("dynamodb").describe_table(TableName=table_name)["Table"]["TableArn"]
     return {
         "gateway_role": session.client("bedrock-agentcore-control").get_gateway(
-            gatewayIdentifier=gateway_id
+            gatewayIdentifier=gateway["gatewayId"]
         )["roleArn"],
+        "runtime_role": resources["runtimes"]["support_agent"]["roleArn"],
+        "gateway": gateway["gatewayArn"],
+        "other_gateway": gateway["gatewayArn"].rsplit("/", 1)[0] + "/some-other-gateway",
+        "agent_model": f"arn:aws:bedrock:{region}:{account}:inference-profile/{AGENT_MODEL}",
+        "agent_foundation_model": f"arn:aws:bedrock:{region}::foundation-model/"
+        + AGENT_MODEL.split(".", 1)[1],
+        "other_model": f"arn:aws:bedrock:{region}:{account}:inference-profile/{OTHER_MODEL}",
         "orders_role": arns["support-get-order-status"]["Role"],
         "customers_role": arns["support-get-customer"]["Role"],
         "refund_role": arns["support-refund-customer"]["Role"],
@@ -59,6 +69,14 @@ def discover() -> dict[str, str]:
 
 def expectations(arn: dict[str, str]) -> list[Expectation]:
     rules = [
+        # The agent runtime may call its one model and its one gateway, and nothing behind it.
+        Expectation("runtime_role", "bedrock:InvokeModel", "agent_model", True),
+        Expectation("runtime_role", "bedrock:InvokeModel", "agent_foundation_model", True),
+        Expectation("runtime_role", "bedrock:InvokeModel", "other_model", False),
+        Expectation("runtime_role", "bedrock-agentcore:InvokeGateway", "gateway", True),
+        Expectation("runtime_role", "bedrock-agentcore:InvokeGateway", "other_gateway", False),
+        Expectation("runtime_role", "lambda:InvokeFunction", "refund_fn", False),
+        Expectation("runtime_role", "dynamodb:PutItem", "refunds_table", False),
         # The gateway may invoke exactly the three tool functions.
         *(
             Expectation("gateway_role", "lambda:InvokeFunction", fn, True)
@@ -100,7 +118,7 @@ def main() -> int:
         failures += not ok
         print(
             f"{'PASS' if ok else 'FAIL'}  {rule.principal.rsplit('/', 1)[-1]:<62} "
-            f"{rule.action:<23} {rule.resource.rsplit(':', 1)[-1]:<55} {decision}"
+            f"{rule.action:<23} {rule.resource.split(':', 5)[-1]:<55} {decision}"
         )
     print(f"\n{failures} unexpected decision(s)")
     return 1 if failures else 0
